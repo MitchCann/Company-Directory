@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="author" content="Mitch Cann" />
+
+    <!--Favicon-->
+    <link rel="icon" href="./img/favicon1.png" type="image/x-icon" />
+    <!--Bootstrap-->
+    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+    <!--Stylesheet-->
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+   
+   
+    <script defer src="js/font-awesome.js"></script>
+    <title>Company Directory | By Mitch Cann</title>
+  </head>
+
+  <body>
+    
+    <!--Preloader-->
+    <div class="preloader" id="preloader"> <img class="preloader-icon" src="img/Ripple-loader.gif" alt="My Site Preloader"> </div>
+
+    <!-- Navbar -->
+    <div id="navbar">
+      <h1>Company Directory</h1>
+      <div class="nav-btn-container">
+        <button id="employees-btn" class="btn" type="button">
+          employees
+        </button>
+        <button id="departments-btn" class="btn" type="button">
+          departments
+        </button>
+        <button id="locations-btn" class="btn" type="button">
+          locations
+        </button>
+      </div>
+    </div>
+    <!-- Employees Section -->
+
+    
+    <div id="employees">
+      <div class="section-action-container">
+        <div class="employee-action-container">
+          <span id="input-span">
+         
+        </span>
+        </div>
+
+        <div class="employee-action-container">
+          <span id="filter-span">
+        
+        </span>
+        </div>
+        <div>
+          <span id="newSpan">
+          <button id="employee-add-btn" class="btn btn-secondary add-btn">
+            <i class="fas fa-plus"></i> Add Employee
+          </button>
+        </span>
+        </div>
+      </div>
+      <div class="employee-content">
+        <table class="table table-header">
+          <tr>
+            <td id="table-title">EMPLOYEES</td>
+          </tr>
+        </table>
+        <div style="overflow-x:auto; height: 31rem;">
+        <table id='holiday-table' class='table table-striped table-hover'>
+          <tbody id="all-body">
+           
+            
+            
+            
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Departments Display Modal -->
+    <div class="modal fade" id="departments">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>Departments</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="section-action-container">
+              <div class="deploc-action-container">
+                <input
+                  type="text"
+                  placeholder="Search Departments"
+                  id="department-search"
+                />
+              </div>
+              <div class="deploc-action-container">
+                <button id="department-add-btn" class="btn btn-primary add-btn">
+                  <i class="fas fa-plus"></i>
+                </button>
+                <button
+                  id="department-filter-location-btn"
+                  class="btn btn-primary"
+                >
+                  <i class="fas fa-filter"></i> Location
+                </button>
+              </div>
+            </div>
+            <div id="department-table-body">
+              
+              <table class="table table-header">
+                <tr>
+                  <td>Departments</td>
+                </tr>
+              </table>
+         
+               <div> 
+              <table class='table table-striped table-hover'>
+                <tbody id="department-body">
+                 
+                  
+                  
+                  
+                </tbody>
+              </table> 
+              </div>
+            </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Locations Display Modal -->
+    <div class="modal fade" id="locations">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>Locations</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="section-action-container">
+              <input
+                type="text"
+                placeholder="Search Locations"
+                id="location-search"
+              />
+              <button id="location-add-btn" class="btn add-btn">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+            <div id="location-table-body"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Employee Display Modal -->
+    <div class="modal fade" id="display-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 id="display-employee-name"></h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h2 id="display-employee-title"></h2>
+            <h5 id="display-employee-deploc"></h5>
+            <h5 id="display-employee-email"></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Add Employee Modal -->
+    <div class="modal fade" id="add-employee-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>New Employee</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="addEmployeeFirstName">First Name</label>
+                <input
+                  type="text"
+                  class="form-control add-first-name"
+                  id="addEmployeeFirstName"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="addEmployeeLastName">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control add-last-name"
+                  id="addEmployeeLastName"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="addEmployeeEmail">Email</label>
+                <input
+                  type="email"
+                  class="form-control add-email"
+                  id="addEmployeeEmail"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="addEmployeeDepartment">Department</label>
+                <select class="form-control" id="addEmployeeDepartment">
+                </select>
+              </div>
+            </form>
+            <p class="add-error"></p>
+            <p class="add-email-error"></p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Back
+            </button>
+            <button id="confirm-employee-add-btn" class="btn btn-success">
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Add Department Modal -->
+    <div class="modal fade" id="add-department-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>New Department</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="addDepartmentName">Name</label>
+                <input
+                  type="text"
+                  class="form-control add-department-name"
+                  id="addDepartmentName"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="addDepartmentLocation">Location</label>
+                <select class="form-control" id="addDepartmentLocation">
+                </select>
+              </div>
+            </form>
+            <p class="add-error"></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              id="add-department-close-btn"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Back
+            </button>
+            <button id="confirm-department-add-btn" class="btn btn-success">
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Add Location Modal -->
+    <div class="modal fade" id="add-location-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>New Location</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="addLocationName">Name</label>
+                <input
+                  type="text"
+                  class="form-control add-location-name"
+                  id="addLocationName"
+                  required
+                />
+              </div>
+            </form>
+            <p class="add-error"></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              id="add-location-close-btn"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Back
+            </button>
+            <button id="confirm-location-add-btn" class="btn btn-success">
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Edit Employee Modal -->
+    <div class="modal fade" id="edit-employee-modal" data-bs-backdrop="static">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="edit-name">Edit Employee</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="editEmployeeFirstName">First Name</label>
+                <input
+                  type="text"
+                  class="form-control edit-first-name"
+                  id="editEmployeeFirstName"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="editEmployeeLastName">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control edit-last-name"
+                  id="editEmployeeLastName"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="editEmployeeEmail">Email</label>
+                <input
+                  type="email"
+                  class="form-control edit-email"
+                  id="editEmployeeEmail"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="editEmployeeJobTitle">Job Title</label>
+                <input
+                  type="text"
+                  class="form-control edit-job-title"
+                  id="editEmployeeJobTitle"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="editEmployeeDepartment">Department</label>
+                <select class="form-control" id="editEmployeeDepartment">
+                </select>
+              </div>
+            </form>
+            <p class="add-error"></p>
+            <p class="add-email-error"></p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Back
+            </button>
+            <button id="confirm-employee-edit-btn" class="btn btn-success">
+              Update
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Edit Department Modal -->
+    <div
+      class="modal fade"
+      id="edit-department-modal"
+      data-bs-backdrop="static"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="edit-name">Edit Department</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="editDepartmentName">Name</label>
+                <input
+                  type="text"
+                  class="form-control edit-department-name"
+                  id="editDepartmentName"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="editDepartmentLocation">Location</label>
+                <select class="form-control" id="editDepartmentLocation">
+                </select>
+              </div>
+            </form>
+            <p class="add-error"></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              id="edit-department-close-btn"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Back
+            </button>
+            <button id="confirm-department-edit-btn" class="btn btn-success">
+              Update
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Edit Location Modal -->
+    <div class="modal fade" id="edit-location-modal" data-bs-backdrop="static">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="edit-name">Edit Location</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="editLocationName">Name</label>
+                <input
+                  type="text"
+                  class="form-control edit-location-name"
+                  id="editLocationName"
+                  required
+                />
+              </div>
+            </form>
+            <p class="add-error"></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              id="edit-location-close-btn"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Back
+            </button>
+            <button id="confirm-location-edit-btn" class="btn btn-success">
+              Update
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Delete Employee Modal -->
+    <div class="modal fade" id="delete-employee-modal" data-bs-backdrop="static">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="edit-name">Delete Employee</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h3>Are you sure you want to delete this employee?</h3>
+            <h5>This cannot be undone</h5>
+          </div>
+          <div class="modal-footer">
+            <button
+              id="confirm-delete-employee-btn"
+              type="button"
+              class="btn btn-danger"
+            >
+              Delete
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Delete Deparment Modal -->
+    <div class="modal fade" id="delete-department-modal" data-bs-backdrop="static">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="edit-name">Delete Department</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h3>Are you sure you want to delete this department?</h3>
+            <h5>This cannot be undone</h5>
+          </div>
+          <div class="modal-footer">
+            <button
+              id="confirm-delete-department-btn"
+              type="button"
+              class="btn btn-danger"
+            >
+              Delete
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Delete Location Modal -->
+    <div class="modal fade" id="delete-location-modal" data-bs-backdrop="static">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="edit-name">Delete Location</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h3>Are you sure you want to delete this location?</h3>
+            <h5>This cannot be undone</h5>
+          </div>
+          <div class="modal-footer">
+            <button
+              id="confirm-delete-location-btn"
+              type="button"
+              class="btn btn-danger"
+            >
+              Delete
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Dependency Warning Modal -->
+    <div class="modal fade" id="dependency-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h1>Warning</h1>
+            <h5 id="dependency-message"></h5>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Success Modal -->
+    <div class="modal fade" id="success-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h2 id="success-message"></h2>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Error Modal -->
+    <div class="modal fade" id="error-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h2 id="error-message"></h2>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Filter By Department Filter Modal -->
+    <div class="modal fade" id="filter-by-department-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>Filter By Department</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="department-filter-list"></form>
+            
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              id="reset"
+            >
+              Reset
+            </button>
+            <button
+              id="confirm-filter-by-department"
+              type="button"
+              class="btn btn-success"
+              data-bs-dismiss="modal"
+            >
+              Filter
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Employee Filter By Location Modal -->
+    <div class="modal fade" id="employee-filter-by-location-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>Filter By Location</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="location-filter-list"></form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              id="reset1"
+            >
+              Reset
+            </button>
+            <button
+              id="confirm-e-filter-by-location"
+              type="button"
+              class="btn btn-success"
+              data-bs-dismiss="modal"
+            >
+              Filter
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Department Filter By Location Modal -->
+    <div class="modal fade" id="department-filter-by-location-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>Filter By Location</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="d-location-filter-list"></form>
+          </div>
+          <div class="modal-footer">
+            <button
+              id="close-d-filter-by-location"
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              id="confirm-d-filter-by-location"
+              type="button"
+              class="btn btn-success"
+            >
+              Filter
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Scripts -->
+
+    <!--JQuery-->
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <!--Bootstrap-->
+    <script src="js/bootstrap.min.js"></script>
+    <!--Font Awesome-->
+    <script src="js/font-awesome.js"></script>
+    <!--Main Script-->
+    <script src="js/main.js"></script>
+  </body>
+</html>
