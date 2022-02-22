@@ -68,24 +68,39 @@ $(window).on('load', function () {
   
 
 //Add Employee
-$( "#employee-add-btn" ).click(function() {
-    $("#add-employee-modal").modal("show");
-  });
+
 
   $(document).on("click", "#employee-add-btn", function(){
     $("#add-employee-modal").modal("show");
+    populate();
   });
+
+  $(document).on("click", "#confirm-employee-add-btn", function(){
+    addEmployee();
+  });
+
+
+
 
 // Add Department
 
   $(document).on("click", "#department-add-btn", function(){
     $("#add-department-modal").modal("show");
+    populate1();
+  });
+
+  $(document).on("click", "#confirm-department-add-btn", function(){
+    addDepartment();
   });
 
   // Add Location
 
   $(document).on("click", "#location-add-btn", function(){
     $("#add-location-modal").modal("show");
+  });
+
+  $(document).on("click", "#confirm-location-add-btn", function(){
+    addLocation();
   });
 
 
@@ -166,8 +181,8 @@ function departmentBuildTable(){
                 
                 result.data.forEach(dep => {
                     $('#all-body').append(`<tr>
-                    <td>${dep.id}</td>
-                    <td>${dep.name}</td>
+                    
+                    <td>&nbsp&nbsp&nbsp&nbsp${dep.name}</td>
                    
                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-department-modal"><i class="fas fa-edit"></i></button>
                 <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-department-modal" "><i class="far fa-trash-alt"></i></button></td>`);
@@ -191,7 +206,7 @@ function locationBuildTable(){
     $("#all-body").empty();
     $("#newSpan").empty();
     $("#input-span").empty();
-
+    $("#filter-span").empty();
     $('#input-span').append(`<input type="text"placeholder="Search Locations"id="searchMain" onkeyup="searchLocation()"/>`);
     
     $('#newSpan').append(`<button id="location-add-btn" class="btn btn-secondary add-btn"><i class="fas fa-plus"></i> Add Location`);
@@ -209,8 +224,8 @@ function locationBuildTable(){
                 
                 result.data.forEach(loc => {
                     $('#all-body').append(`<tr>
-                    <td>${loc.id}</td>
-                    <td>${loc.name}</td>
+                  
+                    <td>&nbsp&nbsp&nbsp&nbsp${loc.name}</td>
                    
                     <td class="silly-buttons"><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-location-modal"><i class="fas fa-edit"></i></button>
                 <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-location-modal" "><i class="far fa-trash-alt"></i></button></td>`);
@@ -411,4 +426,151 @@ function filterDepartment() {
   }
 
   
+// Populate Dropdowns
   
+function populate(){
+
+    $("#addEmployeeDepartment").empty();
+    
+    $.ajax({
+        url: "./php/getAllDepartments.php",
+        type: 'POST',
+        dataType: 'json',
+        
+        success: function(result) {
+
+             console.log("Populate Departments is Working", result);
+            
+            if (result.status.name == "ok") {
+                
+                result.data.forEach(dep => {
+                    $('#addEmployeeDepartment').append(`<option value="${dep.id}">${dep.name}</option>
+                    `)
+                      
+
+                });
+                            
+            }
+        
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(jqXHR.responseText);
+        }
+    }); 
+}
+
+function populate1(){
+
+  $("#addDepartmentlocation").empty();
+  
+  $.ajax({
+      url: "./php/getAllLocations.php",
+      type: 'POST',
+      dataType: 'json',
+      
+      success: function(result) {
+
+           console.log("Populate Locations is Working", result);
+          
+          if (result.status.name == "ok") {
+              
+              result.data.forEach(loc => {
+                  $('#addDepartmentLocation').append(`<option value="${loc.name}">${loc.name}</option>
+                  `)
+                    
+
+              });
+                          
+          }
+      
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR.responseText);
+      }
+  }); 
+}
+
+
+
+
+//Insert Functions
+
+function addDepartment(){
+
+  const name = $('#addDepartmentName')[0].value;
+  const locationID = $('#addDepartmentLocation')[0].value;
+  console.log(name, locationID);
+    
+    $.ajax({
+        url: "./php/insertDepartment.php",
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          name: name,
+          locationID: locationID
+        },
+        success: function(result) {
+
+             console.log("Add Department is Working", result);
+            
+            if (result.status.name == "ok") {
+                
+              departmentBuildTable();
+                            
+            }
+        
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(jqXHR.responseText);
+        }
+    }); 
+}
+
+function addEmployee() {
+  $.ajax({
+      url: './php/getAllLocations.php',
+      type: 'POST',
+      dataType: 'json',
+      data: {
+          lastName: $("#addEmployeeFirstName").val(),
+          firstName: $("#addEmployeeLastName").val(),
+          email: $("#addEmployeeEmail").val(),
+          jobTitle: $("#addEmployeeJobTitle").val(),
+          department: $("#addEmployeeDepartment").val(),
+      },
+      success: function(result) {
+
+          // console.log(result);
+          if (result.status.name == "ok") {
+              buildTable();
+              
+          }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+      //  console.log(jqXHR.responseText,  textStatus, errorThrown);
+      }
+  }); 
+}
+
+function addLocation() {
+  $.ajax({
+      url: './php/insertLocation.php',
+      type: 'POST',
+      dataType: 'json',
+      data: {
+          name: $("#addLocationName").val(),
+       
+      },
+      success: function(result) {
+
+          console.log(result);
+          if (result.status.name == "ok") {
+              locationBuildTable();
+              
+          }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR.responseText,  textStatus, errorThrown);
+      }
+  }); 
+}
