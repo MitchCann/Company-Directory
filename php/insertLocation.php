@@ -1,7 +1,7 @@
 <?php
 
 	// example use from browser
-	// http://localhost/companydirectory/libs/php/insertDepartment.php?name=New%20Department&locationID=<id>
+	// http://localhost/companydirectory/libs/php/insertDepartment.php?name=New%20Department&locationID=1
 
 	// remove next two lines for production
 	
@@ -9,9 +9,7 @@
 	error_reporting(E_ALL);
 
 	$executionStartTime = microtime(true);
-	
-	// this includes the login details
-	
+
 	include("config.php");
 
 	header('Content-Type: application/json; charset=UTF-8');
@@ -34,16 +32,18 @@
 
 	}	
 
-	// SQL statement accepts parameters and so is prepared to avoid SQL injection.
-	// $_REQUEST used for development / debugging. Remember to change to $_POST for production
+	//remove spaces
 
-	$query = $conn->prepare('INSERT INTO location (name) VALUES(?,?)');
+	$_POST['name'] = trim($_POST['name']);
+	$_POST['name'] = preg_replace('# {2,}#', ' ', $_POST['name']);
+	$_POST['name'] = strtolower($_POST['name']);
+	$_POST['name'] = ucfirst($_POST['name']);
 
-	$query->bind_param("si", $_REQUEST['name']);
+	$query = 'INSERT INTO location (name) VALUES("' . $_POST['name'] . '")';
 
-	$query->execute();
+	$result = $conn->query($query);
 	
-	if (false === $query) {
+	if (!$result) {
 
 		$output['status']['code'] = "400";
 		$output['status']['name'] = "executed";

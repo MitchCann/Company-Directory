@@ -532,22 +532,22 @@ function addEmployee() {
       type: 'POST',
       dataType: 'json',
       data: {
-          lastName: $("#addEmployeeFirstName").val(),
-          firstName: $("#addEmployeeLastName").val(),
+          firstName: $("#addEmployeeFirstName").val(),
+          lastName: $("#addEmployeeLastName").val(),
           email: $("#addEmployeeEmail").val(),
           jobTitle: $("#addEmployeeJobTitle").val(),
-          department: $("#addEmployeeDepartment").val(),
+          departmentID: $("#addEmployeeDepartment").val(),
       },
       success: function(result) {
 
-          // console.log(result);
+          console.log(result);
           if (result.status.name == "ok") {
               buildTable();
               
           }
       },
       error: function(jqXHR, textStatus, errorThrown) {
-      //  console.log(jqXHR.responseText,  textStatus, errorThrown);
+      console.log(jqXHR.responseText,  textStatus, errorThrown);
       }
   }); 
 }
@@ -561,8 +561,9 @@ function addLocation() {
           name: $("#addLocationName").val(),
        
       },
+      
       success: function(result) {
-
+          
           console.log(result);
           if (result.status.name == "ok") {
               locationBuildTable();

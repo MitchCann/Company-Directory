@@ -1,12 +1,20 @@
 <?php
 
-    $executionStartTime = microtime(true);
+	// example use from browser 
+	// http://localhost/companydirectory/libs/php/insertDepartment.php?name=New%20Department&locationID=1
 
-    header('Content-Type: application/json; charset=UTF-8');
+	// remove next two lines for production
+	
+	ini_set('display_errors', 'On');
+	error_reporting(E_ALL);
 
-    include("config.php");
+	$executionStartTime = microtime(true);
 
-    $connection = new mysqli($dbServername, $dbUsername, $dbPassword, $dbName);
+	include("../../sql/config.php");
+
+	header('Content-Type: application/json; charset=UTF-8');
+
+	$conn = new mysqli($cd_host, $cd_user, $cd_password, $cd_dbname, $cd_port, $cd_socket);
 
 	if (mysqli_connect_errno()) {
 		
@@ -16,7 +24,7 @@
 		$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
 		$output['data'] = [];
 
-		mysqli_close($connection);
+		mysqli_close($conn);
 
 		echo json_encode($output);
 
@@ -24,17 +32,34 @@
 
 	}	
 
+	// remove spaces and make cap
 
-    $lastName = $_POST['lastName'];
-    $firstName = $_POST['firstName'];
-    $jobTitle = $_POST['jobTitle'];
-    $email = $_POST['email'];
-    $department = $_POST['department'];
+	$_POST['firstName'] = trim($_POST['firstName']);
+	$_POST['firstName'] = preg_replace('# {2,}#', ' ', $_POST['firstName']);
+	$_POST['firstName'] = strtolower($_POST['firstName']);
+	$_POST['firstName'] = ucfirst($_POST['firstName']);
 
 
-	$query = 'INSERT INTO personnel (firstName, lastName, jobTitle, email, departmentID) VALUES ("' . $firstName . '", "' . $lastName . '", "' . $jobTitle . '", "' . $email . '", "' . $department . '")';
- 
-	$result = $connection->query($query);
+	$_POST['lastName'] = trim($_POST['lastName']);
+	$_POST['lastName'] = preg_replace('# {2,}#', ' ', $_POST['lastName']);
+	$_POST['lastName'] = strtolower($_POST['lastName']);
+	$_POST['lastName'] = ucfirst($_POST['lastName']);
+
+
+	$_POST['jobTitle'] = trim($_POST['jobTitle']);
+	$_POST['jobTitle'] = preg_replace('# {2,}#', ' ', $_POST['jobTitle']);
+	$_POST['jobTitle'] = strtolower($_POST['jobTitle']);
+	$_POST['jobTitle'] = ucfirst($_POST['jobTitle']);
+
+
+	$_POST['email'] = trim($_POST['email']);
+	$_POST['email'] = preg_replace('# {2,}#', ' ', $_POST['email']);
+
+	//capital letters
+
+	$query = 'INSERT INTO personnel (firstName, lastName, jobTitle, email, departmentID) VALUES("' . $_POST['firstName'] . '","' . $_POST["lastName"] . '","' . $_POST["jobTitle"] . '","' . $_POST["email"] . '",' . $_POST["departmentID"] . ')';
+
+	$result = $conn->query($query);
 	
 	if (!$result) {
 
@@ -43,7 +68,7 @@
 		$output['status']['description'] = "query failed";	
 		$output['data'] = [];
 
-		mysqli_close($connection);
+		mysqli_close($conn);
 
 		echo json_encode($output); 
 
@@ -57,7 +82,7 @@
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
 	$output['data'] = [];
 	
-	mysqli_close($connection);
+	mysqli_close($conn);
 
 	echo json_encode($output); 
 
