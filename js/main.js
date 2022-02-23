@@ -113,6 +113,14 @@ $(window).on('load', function () {
         $("#delete-employee-modal").modal("show");
    });
 
+  
+  //Delete Department 
+
+   $(document).on("click", "#confirm-location-add-btn", function(){
+    addLocation();
+  });
+
+
 
 //All Employees 
 
@@ -142,8 +150,8 @@ function buildTable(){
                     <td>${person.department}</td>
                     <td>${person.location}</td>
                     <td>${person.email}</td>
-                    <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-employee-modal"><i class="fas fa-edit"></i></button>
-                <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-employee-modal" "><i class="far fa-trash-alt"></i></button></td>`);
+                    <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-employee-modal" value="${person.id}"><i class="fas fa-edit"></i></button>
+                <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-employee-modal" value="${person.id}"><i class="far fa-trash-alt"></i></button></td>`);
                 });
                             
             }
@@ -184,9 +192,9 @@ function departmentBuildTable(){
                     
                     <td>&nbsp&nbsp&nbsp&nbsp${dep.name}</td>
                    
-                    <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-department-modal"><i class="fas fa-edit"></i></button>
-                <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-department-modal" "><i class="far fa-trash-alt"></i></button></td>`);
-
+                    <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-department-modal" " value="${dep.id} onclick="openDepartmentEditModal(${dep.id})"><i class="fas fa-edit"></i></button>
+                <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-department-modal" value="${dep.id}" onclick="onDeleteDepartment(${dep.id})"><i class="far fa-trash-alt"></i></button></td>`);
+                  
                     
                 });
                             
@@ -227,8 +235,8 @@ function locationBuildTable(){
                   
                     <td>&nbsp&nbsp&nbsp&nbsp${loc.name}</td>
                    
-                    <td class="silly-buttons"><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-location-modal"><i class="fas fa-edit"></i></button>
-                <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-location-modal" "><i class="far fa-trash-alt"></i></button></td>`);
+                    <td class="silly-buttons"><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-location-modal" value="${loc.id}"><i class="fas fa-edit"></i></button>
+                <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-location-modal" value="${loc.id}"><i class="far fa-trash-alt"></i></button></td>`);
                 });
                             
             }
@@ -528,7 +536,7 @@ function addDepartment(){
 
 function addEmployee() {
   $.ajax({
-      url: './php/getAllLocations.php',
+      url: './php/insertEmployee.php',
       type: 'POST',
       dataType: 'json',
       data: {
@@ -575,3 +583,35 @@ function addLocation() {
       }
   }); 
 }
+
+// Delete Functions
+
+  
+const onDeleteDepartment = (id) => {
+  $.ajax({
+    url: './php/deleteDepartmentByID.php',
+    type: 'POST',
+    dataType:'json',
+    data: {
+      name: id
+    },
+
+    success: (response) => {
+      if (response.status.description === 'dependency issue') {
+        $('#dependency-message').html(
+          'There are still employees attached to this department. Associated employee records must be removed before this department can be deleted'
+        );
+        $('#departments').modal('hide');
+        $('#dependency-modal').modal('show');
+      } else {
+        generateDepartmentTable();
+        $('#departments').modal('hide');
+        showSuccessModal('Department', 'deleted');
+      }
+    },
+    failure: () => {
+      $('#delete-department-modal').modal('hide');
+      showErrorModal();
+    }
+  });
+};

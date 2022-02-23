@@ -10,7 +10,7 @@
 
 	$executionStartTime = microtime(true);
 
-	include("../../sql/config.php");
+	include("config.php");
 
 	header('Content-Type: application/json; charset=UTF-8');
 
