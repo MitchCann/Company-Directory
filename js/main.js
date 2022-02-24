@@ -1,5 +1,6 @@
 var departmentOption;
 var locationOption;
+var selectedDepartment;
 
 
 //PRE LOADER
@@ -116,8 +117,9 @@ $(window).on('load', function () {
   
   //Delete Department 
 
-   $(document).on("click", "#confirm-location-add-btn", function(){
-    addLocation();
+   $(document).on("click", "#confirm-delete-department-btn", function(){
+    console.log("The Department is: ", selectedDepartment);
+    checkDependency(selectedDepartment);
   });
 
 
@@ -186,6 +188,8 @@ function departmentBuildTable(){
              console.log("Get Departments is Working", result);
             
             if (result.status.name == "ok") {
+                  
+                
                 
                 result.data.forEach(dep => {
                     $('#all-body').append(`<tr>
@@ -193,11 +197,19 @@ function departmentBuildTable(){
                     <td>&nbsp&nbsp&nbsp&nbsp${dep.name}</td>
                    
                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-department-modal" " value="${dep.id} onclick="openDepartmentEditModal(${dep.id})"><i class="fas fa-edit"></i></button>
-                <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-department-modal" value="${dep.id}" onclick="onDeleteDepartment(${dep.id})"><i class="far fa-trash-alt"></i></button></td>`);
-                  
-                    
+                <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-department-modal"  value="${dep.id}  "><i class="far fa-trash-alt"></i></button></td>`);
+
+                
                 });
-                            
+
+                $(document).ready(function() {
+                  $('.bin').click(function() {
+                      
+                      selectedDepartment = this.value;
+                      console.log("it has worked", this.value, selectedDepartment);
+                  });
+              })
+                
             }
         
         },
@@ -339,7 +351,7 @@ function searchTable() {
                     <label for=departmentRadios>${dep.name}</label>
                   </div>`)
                        departmentOption =  $("input[name='departmentRadios']:checked").val();
-
+                        
                 });
                             
             }
@@ -587,31 +599,61 @@ function addLocation() {
 // Delete Functions
 
   
-const onDeleteDepartment = (id) => {
+const onDeleteDepartment = (selectedDepartment) => {
+  console.log("Delete Departments has been called.", selectedDepartment)
   $.ajax({
     url: './php/deleteDepartmentByID.php',
     type: 'POST',
     dataType:'json',
     data: {
-      name: id
+      id: selectedDepartment,
     },
 
     success: (response) => {
+      console.log(response);
       if (response.status.description === 'dependency issue') {
-        $('#dependency-message').html(
-          'There are still employees attached to this department. Associated employee records must be removed before this department can be deleted'
-        );
-        $('#departments').modal('hide');
-        $('#dependency-modal').modal('show');
-      } else {
-        generateDepartmentTable();
+        
+        departmentBuildTable();
         $('#departments').modal('hide');
         showSuccessModal('Department', 'deleted');
       }
     },
-    failure: () => {
-      $('#delete-department-modal').modal('hide');
-      showErrorModal();
-    }
+    
   });
 };
+
+const  checkDependency = (selectedDepartment) => {
+  console.log("Check Dependency has been called.", selectedDepartment)
+  $.ajax({
+    url: './php/getEmployeeDepartment.php',
+    type: 'POST',
+    dataType: 'html',
+    data: {
+      departmentID: selectedDepartment,
+    },
+
+    success: (response) => {
+      console.log(response);
+      if (response.data.length !== 0) {
+       console.log("There's something here")
+      } else {
+        console.log("There's nothing here")
+      }
+    },
+
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR.responseText,  textStatus, errorThrown);
+      }
+    
+  });
+};
+
+
+
+
+
+//Error and Success Modals
+
+function showSuccessModal () {
+  $('#success-message').html(`Entry Deleted`);
+  $('#success-modal').modal('show'); }

@@ -577,6 +577,7 @@
               id="confirm-delete-department-btn"
               type="button"
               class="btn btn-danger"
+              data-bs-dismiss="modal"
             >
               Delete
             </button>
@@ -634,7 +635,7 @@
         <div class="modal-content">
           <div class="modal-body">
             <h1>Warning</h1>
-            <h5 id="dependency-message"></h5>
+            <h5>You cannot delete this department as it still has employees assigned to it.</h5>
           </div>
           <div class="modal-footer">
             <button
