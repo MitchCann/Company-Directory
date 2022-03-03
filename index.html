@@ -13,10 +13,6 @@
     <!--Stylesheet-->
     <link rel="stylesheet" href="./css/style.css" />
 
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
    
    
     <script defer src="js/font-awesome.js"></script>
@@ -407,7 +403,7 @@
                 />
               </div>
               <div class="form-group">
-                <label for="editEmployeeDepartment">Department</label>
+                <label for="editEmployeeDepartment" id="editLabel">Department</label>
                 <select class="form-control" id="editEmployeeDepartment">
                 </select>
               </div>
@@ -435,7 +431,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="edit-name">Edit Department</h1>
+            <h1 class="edit-name" >Edit Department</h1>
             <button
               type="button"
               class="btn-close"
@@ -455,7 +451,7 @@
                 />
               </div>
               <div class="form-group">
-                <label for="editDepartmentLocation">Location</label>
+                <label for="editDepartmentLocation" id="demo">Location</label>
                 <select class="form-control" id="editDepartmentLocation">
                 </select>
               </div>
@@ -541,6 +537,7 @@
               id="confirm-delete-employee-btn"
               type="button"
               class="btn btn-danger"
+              data-bs-dismiss="modal"
             >
               Delete
             </button>
@@ -559,6 +556,7 @@
     <div class="modal fade" id="delete-department-modal" data-bs-backdrop="static">
       <div class="modal-dialog">
         <div class="modal-content">
+          
           <div class="modal-header">
             <h1 class="edit-name">Delete Department</h1>
             <button
@@ -614,6 +612,7 @@
               id="confirm-delete-location-btn"
               type="button"
               class="btn btn-danger"
+              data-bs-dismiss="modal"
             >
               Delete
             </button>
@@ -633,9 +632,36 @@
     <div class="modal fade" id="dependency-modal">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-body">
+          <div class="modal-header" id="warning-header">
             <h1>Warning</h1>
+          </div>
+          <div class="modal-body">
+            
             <h5>You cannot delete this department as it still has employees assigned to it.</h5>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Location Dependency Warning Modal -->
+    <div class="modal fade" id="dependency-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header" id="warning-header">
+            <h1>Warning</h1>
+          </div>
+          <div class="modal-body">
+            
+            <h5>You cannot delete this location as it still has departments assigned to it.</h5>
           </div>
           <div class="modal-footer">
             <button

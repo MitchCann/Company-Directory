@@ -255,4 +255,7 @@ width: 100px;
 border-radius: 50%;
 animation: shake 1.5s infinite;
 }
-  
+
+#warning-header {
+  background-color: red;
+}

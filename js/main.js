@@ -1,6 +1,15 @@
 var departmentOption;
 var locationOption;
 var selectedDepartment;
+var selectedLocation;
+var selectedEmployee;
+var firstName;
+var lastName;
+var email;
+var jobTitle;
+var departmentID;
+var locId;
+var locName;
 
 
 //PRE LOADER
@@ -87,6 +96,8 @@ $(window).on('load', function () {
 
   $(document).on("click", "#department-add-btn", function(){
     $("#add-department-modal").modal("show");
+    $('#addDepartmentName').val('');
+
     populate1();
   });
 
@@ -98,6 +109,7 @@ $(window).on('load', function () {
 
   $(document).on("click", "#location-add-btn", function(){
     $("#add-location-modal").modal("show");
+    $('#addLocationName').val('');
   });
 
   $(document).on("click", "#confirm-location-add-btn", function(){
@@ -121,6 +133,45 @@ $(window).on('load', function () {
     console.log("The Department is: ", selectedDepartment);
     checkDependency(selectedDepartment);
   });
+
+  //Delete Location 
+
+  $(document).on("click", "#confirm-delete-location-btn", function(){
+    console.log("The Department is: ", selectedLocation);
+    checkLocationDependency(selectedLocation);
+  });
+
+  //Delete Employee 
+
+  $(document).on("click", "#confirm-delete-employee-btn", function(){
+    console.log("The Employee is: ", selectedEmployee);
+    onDeleteEmployee(selectedEmployee);
+  });
+
+  //Edit Employee 
+
+  $(document).on("click", "#confirm-employee-edit-btn", function(){
+    console.log("The Employee is: ", selectedEmployee);
+    onEditEmployee(selectedEmployee);
+  });
+
+  //Edit Department 
+
+  $(document).on("click", "#confirm-department-edit-btn", function(){
+    console.log("The Department is: ", selectedDepartment);
+    onEditDepartment(selectedDepartment);
+  });
+
+   //Edit Location 
+
+   $(document).on("click", "#confirm-location-edit-btn", function(){
+    console.log("The Location is: ", selectedLocation);
+    onEditLocation(selectedLocation);
+  });
+
+ 
+
+
 
 
 
@@ -155,6 +206,24 @@ function buildTable(){
                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-employee-modal" value="${person.id}"><i class="fas fa-edit"></i></button>
                 <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-employee-modal" value="${person.id}"><i class="far fa-trash-alt"></i></button></td>`);
                 });
+
+                $(document).ready(function() {
+                  $('.bin').click(function() {
+                      
+                      selectedEmployee = this.value;
+                      console.log("it has worked", this.value, selectedEmployee);
+                  });
+              })
+
+              $(document).ready(function() {
+                $('.edit').click(function() {
+                    
+                    selectedEmployee = this.value;
+                    console.log("edit button has worked", this.value, selectedEmployee);
+                    getEdit(selectedEmployee);
+
+                });
+            })
                             
             }
         
@@ -196,7 +265,7 @@ function departmentBuildTable(){
                     
                     <td>&nbsp&nbsp&nbsp&nbsp${dep.name}</td>
                    
-                    <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-department-modal" " value="${dep.id} onclick="openDepartmentEditModal(${dep.id})"><i class="fas fa-edit"></i></button>
+                    <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-department-modal" " value="${dep.id}"><i class="fas fa-edit"></i></button>
                 <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-department-modal"  value="${dep.id}  "><i class="far fa-trash-alt"></i></button></td>`);
 
                 
@@ -208,7 +277,16 @@ function departmentBuildTable(){
                       selectedDepartment = this.value;
                       console.log("it has worked", this.value, selectedDepartment);
                   });
-              })
+              }),
+
+              $(document).ready(function() {
+                $('.edit').click(function() {
+                    
+                    selectedDepartment = this.value;
+                    console.log("it has worked", this.value, selectedDepartment);
+                    getDepartmentEdit(selectedDepartment);
+                });
+            })
                 
             }
         
@@ -250,6 +328,24 @@ function locationBuildTable(){
                     <td class="silly-buttons"><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-location-modal" value="${loc.id}"><i class="fas fa-edit"></i></button>
                 <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-location-modal" value="${loc.id}"><i class="far fa-trash-alt"></i></button></td>`);
                 });
+
+                $(document).ready(function() {
+                  $('.bin').click(function() {
+                      
+                      selectedLocation = this.value;
+                      console.log("Location bin has worked", this.value, selectedLocation);
+                  });
+              })
+
+              $(document).ready(function() {
+                $('.edit').click(function() {
+                    
+                    selectedLocation = this.value;
+                    console.log("edit location button has worked", this.value, selectedLocation);
+                    getLocationEdit(selectedLocation);
+
+                });
+            })
                             
             }
         
@@ -466,6 +562,14 @@ function populate(){
                 result.data.forEach(dep => {
                     $('#addEmployeeDepartment').append(`<option value="${dep.id}">${dep.name}</option>
                     `)
+                    $('#editEmployeeDepartment').append(`<option value="${dep.id}">${dep.name}</option>
+                    `)
+
+                 
+
+
+
+
                       
 
                 });
@@ -483,6 +587,7 @@ function populate1(){
 
   $("#addDepartmentlocation").empty();
   
+  
   $.ajax({
       url: "./php/getAllLocations.php",
       type: 'POST',
@@ -495,7 +600,9 @@ function populate1(){
           if (result.status.name == "ok") {
               
               result.data.forEach(loc => {
-                  $('#addDepartmentLocation').append(`<option value="${loc.name}">${loc.name}</option>
+                  $('#addDepartmentLocation').append(`<option value="${loc.id}">${loc.name}</option>
+                  `)
+                  $('#editDepartmentLocation').append(`<option value="${loc.id}">${loc.name}</option>
                   `)
                     
 
@@ -513,10 +620,10 @@ function populate1(){
 
 
 
-//Insert Functions
+//Add Functions
 
 function addDepartment(){
-
+  
   const name = $('#addDepartmentName')[0].value;
   const locationID = $('#addDepartmentLocation')[0].value;
   console.log(name, locationID);
@@ -598,6 +705,7 @@ function addLocation() {
 
 // Delete Functions
 
+//Delete Department
   
 const onDeleteDepartment = (selectedDepartment) => {
   console.log("Delete Departments has been called.", selectedDepartment)
@@ -611,12 +719,11 @@ const onDeleteDepartment = (selectedDepartment) => {
 
     success: (response) => {
       console.log(response);
-      if (response.status.description === 'dependency issue') {
-        
+   
         departmentBuildTable();
         $('#departments').modal('hide');
         showSuccessModal('Department', 'deleted');
-      }
+      
     },
     
   });
@@ -627,7 +734,7 @@ const  checkDependency = (selectedDepartment) => {
   $.ajax({
     url: './php/getEmployeeDepartment.php',
     type: 'POST',
-    dataType: 'html',
+    dataType: 'json',
     data: {
       departmentID: selectedDepartment,
     },
@@ -636,8 +743,10 @@ const  checkDependency = (selectedDepartment) => {
       console.log(response);
       if (response.data.length !== 0) {
        console.log("There's something here")
+       $('#dependency-modal').modal('show');
       } else {
         console.log("There's nothing here")
+        onDeleteDepartment(selectedDepartment);
       }
     },
 
@@ -649,6 +758,421 @@ const  checkDependency = (selectedDepartment) => {
 };
 
 
+//Delete Employee
+
+const onDeleteEmployee = (selectedEmployee) => {
+  console.log("Delete Employee has been called.", selectedEmployee)
+  $.ajax({
+    url: './php/deleteEmployeeById.php',
+    type: 'POST',
+    dataType:'json',
+    data: {
+      id: selectedEmployee,
+    },
+
+    success: (response) => {
+      console.log(response);
+      buildTable();
+      $('#departments').modal('hide');
+    }
+    
+  });
+};
+
+
+
+//Delete Location
+  
+const onDeleteLocation = (selectedLocation) => {
+  console.log("Delete Departments has been called.", selectedLocation)
+  $.ajax({
+    url: './php/deleteLocationByID.php',
+    type: 'POST',
+    dataType:'json',
+    data: {
+      id: selectedLocation,
+    },
+
+    success: (response) => {
+      console.log(response);
+   
+        locationBuildTable();
+        $('#locations').modal('hide');
+        showSuccessModal('Location', 'deleted');
+      
+    },
+    
+  });
+};
+
+const  checkLocationDependency = (selectedLocation) => {
+  console.log("Check Location Dependency has been called.", selectedLocation)
+  $.ajax({
+    url: './php/getDepartmentsByLocation.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      locationID: selectedLocation,
+    },
+
+    success: (response) => {
+      console.log("Location Dependency Array: ", response);
+      if (response.data.length !== 0) {
+       console.log("There's something here")
+       $('#dependency-modal').modal('show');
+      } else {
+        console.log("The Location Dependency Array is Empty")
+       onDeleteLocation(selectedLocation);
+      }
+    },
+
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR.responseText,  textStatus, errorThrown);
+      }
+    
+  });
+};
+
+  //Edit Functions
+
+  const  getEdit = (selectedEmployee) => {
+    populate();
+    console.log("The selected employee is: ", selectedEmployee);
+    $("#editEmployeeFirstName").empty();
+    $("#editEmployeeLastName").empty();
+    $("#editEmployeeEmail").empty();
+    $("#editEmployeeJobTitle").empty();
+    $("#editEmployeeDepartment").empty();
+    $(".edit-name").empty();
+    
+    $.ajax({
+        url: "./php/getPersonnelByID.php",
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          id: selectedEmployee,
+        },
+
+        
+        
+        success: function(result) {
+
+             console.log("Get Employee for edit is Working", result);
+
+             if (result.status.name == "ok") {
+                
+              result.data.forEach(loc => {
+                  $('#all-body').append(`<tr>
+                
+                  <td>&nbsp&nbsp&nbsp&nbsp${loc.name}</td>
+                 
+                  <td class="silly-buttons"><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-location-modal" value="${loc.id}"><i class="fas fa-edit"></i></button>
+              <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-location-modal" value="${loc.id}"><i class="far fa-trash-alt"></i></button></td>`);
+              });
+
+              $(document).ready(function() {
+                $('.bin').click(function() {
+                    
+                    selectedLocation = this.value;
+                    console.log("Location bin has worked", this.value, selectedLocation);
+                });
+            })
+                          
+          }
+            
+            if (result.status.name == "ok") {
+                
+              result.data.forEach(emp => {
+                $('.edit-name').html(
+                  `Edit ${emp.firstName} ${emp.lastName}`
+                );
+                $('#editEmployeeFirstName:text').val(emp.firstName);
+                $('#editEmployeeLastName:text').val(emp.lastName);
+                $('#editEmployeeEmail').val(emp.email);
+                $('#editEmployeeJobTitle:text').val(emp.jobTitle);
+
+              }
+
+              );
+            
+            }
+        
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(jqXHR.responseText, textStatus, errorThrown);
+        }
+    }); 
+}
+
+const onEditEmployee = (selectedEmployee) => {
+  
+  
+   
+     firstName = $('#editEmployeeFirstName')[0].value;
+     lastName = $('#editEmployeeLastName')[0].value;
+     email = $('#editEmployeeEmail')[0].value;
+     jobTitle = $('#editEmployeeJobTitle')[0].value;
+     departmentID = $('#editEmployeeDepartment')[0].value;
+
+    console.log(firstName, lastName, email, jobTitle, departmentID)
+    $.ajax({
+      url: `./php/editEmployee.php`,
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        id: selectedEmployee,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        jobTitle: jobTitle,
+        departmentID: departmentID
+
+      },
+
+      success: () => {
+        buildTable();
+        $('#edit-employee-modal').modal('hide');
+        showEditSuccessModal();
+      },
+      failure: () => {
+        $('#edit-employee-modal').modal('hide');
+        showErrorModal();
+      },
+
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR.responseText,  textStatus, errorThrown);
+        }
+    });
+  
+};
+
+
+const  getDepartmentEdit = (selectedDepartment) => {
+  populate1();
+
+  console.log("The selected department is: ", selectedDepartment);
+  $("#editDepartmentName").empty();
+  $("#editDepartmentLocation").empty();
+  $(".edit-name").empty();
+  $("#demo").empty();
+  
+  $.ajax({
+      url: "./php/getDepartmentByID.php",
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        id: selectedDepartment,
+      },
+
+      
+      
+      success: function(result) {
+
+           console.log("Get Department for edit is Working", result);
+
+           
+          
+          if (result.status.name == "ok") {
+              
+            result.data.forEach(dep => {
+              $('.edit-name').html(
+                `Edit ${dep.name}`
+              );
+              $('#editDepartmentName:text').val(dep.name);
+               locId = dep.locationID;
+              console.log("Loc ID is:", locId);
+
+            }
+
+            );
+
+            
+          
+          }
+
+          $.ajax({
+            url: "./php/getLocationByID.php",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+              id: locId,
+            },
+      
+            
+            
+            success: function(result) {
+      
+                 console.log("Get Location for Department edit is Working", result);
+      
+                 
+                
+                if (result.status.name == "ok") {
+                    
+                  result.data.forEach(loc => {
+                   
+                    locName = loc.name;
+                    locId = loc.locationID;
+                    console.log("Loc Name is:", locName);
+                    document.getElementById("demo").innerHTML = "Location (currently " + loc.name + ")";
+                  }
+      
+                  );
+      
+                  
+                
+                }
+      
+      
+                
+            
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.log(jqXHR.responseText, textStatus, errorThrown);
+            }
+        }); 
+
+
+          
+      
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR.responseText, textStatus, errorThrown);
+      }
+  }); 
+}
+
+
+const onEditDepartment = (selectedDepartment) => {
+  
+  
+   
+  departmentName = $('#editDepartmentName')[0].value;
+  locationID = $('#editDepartmentLocation')[0].value;
+
+ console.log(departmentName, locationID)
+ $.ajax({
+   url: `./php/editDepartment.php`,
+   type: 'POST',
+   dataType: 'json',
+   data: {
+     id: selectedDepartment,
+     name: departmentName,
+     locationID: locationID,
+     
+
+   },
+
+   success: () => {
+     departmentBuildTable();
+     $('#edit-department-modal').modal('hide');
+     showEditSuccessModal();
+   },
+   failure: () => {
+     $('#edit-department-modal').modal('hide');
+     showErrorModal();
+   },
+
+   error: function(jqXHR, textStatus, errorThrown) {
+     console.log(jqXHR.responseText,  textStatus, errorThrown);
+     }
+ });
+
+};
+
+
+const  getLocationEdit = (selectedLocation) => {
+ 
+
+  console.log("The selected location is: ", selectedLocation);
+  $("#editLocationName").empty();
+  $(".edit-name").empty();
+  
+  $.ajax({
+    url: "./php/getLocationByID.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      id: selectedLocation,
+    },
+
+    
+    
+    success: function(result) {
+
+         console.log("Get Location for Location edit is Working", result);
+
+         
+        
+        if (result.status.name == "ok") {
+            
+          result.data.forEach(loc => {
+            $('.edit-name').html(
+              `Edit ${loc.name}`
+            );
+            $('#editLocationName:text').val(loc.name);
+            locName = loc.name;
+            locId = loc.locationID;
+            console.log("Loc Name is:", locName);
+            
+          }
+
+          );
+
+          
+        
+        }
+
+
+        
+    
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR.responseText, textStatus, errorThrown);
+    }
+}); 
+  
+}
+
+const onEditLocation = (selectedLocation) => {
+  
+  
+   
+  locationName = $('#editLocationName')[0].value;
+  
+
+ console.log(locName);
+ $.ajax({
+   url: `./php/editLocation.php`,
+   type: 'POST',
+   dataType: 'json',
+   data: {
+     id: selectedLocation,
+     name: locationName,
+     
+     
+
+   },
+
+   success: () => {
+     locationBuildTable();
+     $('#edit-location-modal').modal('hide');
+     showEditSuccessModal();
+   },
+   failure: () => {
+     $('#edit-location-modal').modal('hide');
+     showErrorModal();
+   },
+
+   error: function(jqXHR, textStatus, errorThrown) {
+     console.log(jqXHR.responseText,  textStatus, errorThrown);
+     }
+ });
+
+};
+
+
+
+
 
 
 
@@ -657,3 +1181,14 @@ const  checkDependency = (selectedDepartment) => {
 function showSuccessModal () {
   $('#success-message').html(`Entry Deleted`);
   $('#success-modal').modal('show'); }
+
+function showEditSuccessModal () {
+    $('#success-message').html(`Entry Edited`);
+    $('#success-modal').modal('show'); }
+
+  function showErrorModal () {
+      $('#error-message').html(
+        'There was a problem with this action. Please try again later'
+      );
+      $('#error-modal').modal('show');
+    };
