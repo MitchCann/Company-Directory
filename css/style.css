@@ -1,6 +1,11 @@
 
   * {
     font-weight: 300 !important;
+    
+  }
+
+  html {
+    background-color: #1f4174;
   }
   
   body {
@@ -22,6 +27,14 @@
     overflow-x:auto; 
     height: 31rem;
   }
+  
+
+  #entryCount {
+    text-align: center;
+    background-color: #1f4174;
+    color: white;
+  }
+  
   
   /* NAVBAR */
   
@@ -99,7 +112,7 @@
     height: 80%;
   }
   .employee-content {
-    width: 80vw;
+    /*width: 80vw;*/
     margin: 0 auto;
   }
   #employee-table-body,
@@ -132,11 +145,19 @@
   
   /* ICONS */
   .edit {
+    color: #1f4174;
+    font-size: 1.5rem;
+    border: 0px;
+    background: transparent;
+  }
+
+  .search {
     color: #6892d1;
     font-size: 1.5rem;
     border: 0px;
     background: transparent;
   }
+
   .bin {
     color: #ff704d;
     font-size: 1.5rem;
@@ -148,9 +169,22 @@
     cursor: pointer;
     opacity: 0.8;
   }
+
+  #scrollBack {
+    position: fixed;
+    bottom: 30px;
+    left: 40px;
+    display: none;
+    z-index: 100;
+}
+  
   
   /* MEDIA QUERIES */
   @media only screen and (max-width: 730px) {
+
+    .hidden {
+      display: none;
+    }
     #navbar {
       display: block;
       height: auto;
@@ -214,7 +248,7 @@
       justify-content: space-around;
     }
     .employee-action-container .btn {
-      margin: 0;
+     
       font-size: 1rem;
     }
   }
@@ -256,6 +290,18 @@ border-radius: 50%;
 animation: shake 1.5s infinite;
 }
 
+.preloader-icon1
+{
+position: relative;
+top: 45%;
+width: 100px;
+border-radius: 50%;
+animation: shake 1.5s infinite;
+margin-left: 45%;
+margin-top: 15%;
+}
+
 #warning-header {
   background-color: red;
 }
+

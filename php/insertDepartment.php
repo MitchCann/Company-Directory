@@ -34,6 +34,13 @@
 
 	}	
 
+	//remove spaces
+
+	$_POST['name'] = trim($_POST['name']);
+	$_POST['name'] = preg_replace('# {2,}#', ' ', $_POST['name']);
+	$_POST['name'] = strtolower($_POST['name']);
+	$_POST['name'] = ucfirst($_POST['name']);
+
 	// SQL statement accepts parameters and so is prepared to avoid SQL injection.
 	// $_REQUEST used for development / debugging. Remember to change to $_POST for production
 

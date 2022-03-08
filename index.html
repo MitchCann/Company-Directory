@@ -15,7 +15,7 @@
 
    
    
-    <script defer src="js/font-awesome.js"></script>
+    
     <title>Company Directory | By Mitch Cann</title>
   </head>
 
@@ -23,6 +23,9 @@
     
     <!--Preloader-->
     <div class="preloader" id="preloader"> <img class="preloader-icon" src="img/Ripple-loader.gif" alt="My Site Preloader"> </div>
+
+    
+
 
     <!-- Navbar -->
     <div id="navbar">
@@ -46,13 +49,13 @@
       <div class="section-action-container">
         <div class="employee-action-container">
           <span id="input-span">
-         
+            <button id="employee-filter-department-btn" class="btn btn-secondary"> <i class="fas fa-filter"></i> Department</button>
         </span>
         </div>
 
         <div class="employee-action-container">
           <span id="filter-span">
-        
+            <button id="employee-filter-location-btn" class="btn btn-secondary"><i class="fas fa-filter"></i> Location</button>
         </span>
         </div>
         <div>
@@ -69,15 +72,17 @@
             <td id="table-title">EMPLOYEES</td>
           </tr>
         </table>
-        <div style="overflow-x:auto; height: 31rem;">
+        
+        <div id="scroll-table" style="overflow-x:auto; height: 31rem;">
+          
         <table id='holiday-table' class='table table-striped table-hover'>
+         
           <tbody id="all-body">
-           
-            
-            
+            <div id="preloader1"> <img class="preloader-icon1" src="img/Ripple-loader.gif" alt="My Site Preloader"></div>
             
           </tbody>
         </table>
+      
       </div>
     </div>
 
@@ -174,7 +179,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 id="display-employee-name"></h1>
+            <h1>Employee Details</h1>
             <button
               type="button"
               class="btn-close"
@@ -183,9 +188,17 @@
             ></button>
           </div>
           <div class="modal-body">
-            <h2 id="display-employee-title"></h2>
-            <h5 id="display-employee-deploc"></h5>
+            <h2 id="display-employee-name"></h2>
+            <h5 id="display-employee-title">Job Title: N/A</h5>
+            <h5 id="display-employee-department"></h5>
             <h5 id="display-employee-email"></h5>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Back
+            </button>
+           
+          </div>
           </div>
         </div>
       </div>
@@ -838,6 +851,19 @@
         </div>
       </div>
     </div>
+
+    <!--Back to top-->
+    <button type="button" class="btn btn-danger btn-floating btn-lg" id="scrollBack">
+      <i class="bi bi-arrow-up">↑</i>
+    </button>
+
+    <!--Count-->
+    <div id="entryCount">
+      <p></p>
+    </div>
+
+
+
     <!-- Scripts -->
 
     <!--JQuery-->

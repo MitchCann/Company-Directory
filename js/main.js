@@ -10,6 +10,9 @@ var jobTitle;
 var departmentID;
 var locId;
 var locName;
+var employeeCount = 0;
+var departmentCount = 0;
+var locationCount = 0;
 
 
 //PRE LOADER
@@ -27,6 +30,7 @@ $(window).on('load', function () {
 
 //Big Filters
     $( "#employees-btn" ).click(function() {
+      $('#preloader1').show();
         buildTable();
     });
 
@@ -145,6 +149,7 @@ $(window).on('load', function () {
 
   $(document).on("click", "#confirm-delete-employee-btn", function(){
     console.log("The Employee is: ", selectedEmployee);
+    
     onDeleteEmployee(selectedEmployee);
   });
 
@@ -170,23 +175,41 @@ $(window).on('load', function () {
   });
 
  
+//Return to Top
 
 
+
+$('#scroll-table').scroll(function() {
+  var height = $('#scroll-table').scrollTop();
+  if (height > 20) {
+      $('#scrollBack').fadeIn();
+  } else {
+      $('#scrollBack').fadeOut();
+  }
+});
+
+$("#scrollBack").click(function(event) {
+  console.log("Scroll Clicked");
+      $('#scroll-table').animate({ scrollTop: 0 }, "slow");
+});
 
 
 
 //All Employees 
 
 function buildTable(){
+
     $("#all-body").empty();
     $("#newSpan").empty();
     $("#input-span").empty();
     $("#filter-span").empty();
+    $("#entryCount").empty();
     $('#filter-span').append(`<button id="employee-filter-department-btn" class="btn btn-secondary"> <i class="fas fa-filter"></i> Department</button>`);
     $('#filter-span').append(`<button id="employee-filter-location-btn" class="btn btn-secondary"><i class="fas fa-filter"></i> Location</button>`);
     $('#input-span').append(`<input type="text"placeholder="Search Employees"id="searchMain" onkeyup="searchTable()"/>`);
     $('#newSpan').append(`<button id="employee-add-btn" class="btn btn-secondary add-btn"><i class="fas fa-plus"></i> Add Employee</button>`);
     document.getElementById("table-title").innerHTML = "Employees";
+    employeeCount = 0;
     $.ajax({
         url: "./php/getAll.php",
         type: 'POST',
@@ -197,20 +220,33 @@ function buildTable(){
              console.log("Get All is Working", result);
             
             if (result.status.name == "ok") {
-                
+              document.getElementsByClassName('employee-content')[0].style.width = '100%';
                 result.data.forEach(person => {
+                    employeeCount ++;
+                    
                     $('#all-body').append(`<tr><td>${person.firstName + " " + person.lastName}</td>
-                    <td>${person.department}</td>
-                    <td>${person.location}</td>
-                    <td>${person.email}</td>
+                    <td class="hidden">${person.department}</td>
+                    <td class="hidden">${person.location}</td>
+                    <td class="hidden">${person.email}</td>
+                    <td><button type="button" class="search" data-bs-toggle="modal" data-bs-target="#display-modal" value="${person.id}"><i class="fas fa-search-plus"></i></button>
+
                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-employee-modal" value="${person.id}"><i class="fas fa-edit"></i></button>
-                <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-employee-modal" value="${person.id}"><i class="far fa-trash-alt"></i></button></td>`);
+                    <td><button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-employee-modal" value="${person.id}"><i class="far fa-trash-alt"></i></button></td>`);
                 });
+
+                  console.log(employeeCount);
+                  $('#entryCount').html(
+                    `Total Employees: ${employeeCount}`
+                  );
+                
+                  $('#preloader1').hide();
+                
 
                 $(document).ready(function() {
                   $('.bin').click(function() {
                       
                       selectedEmployee = this.value;
+                      getEmployeeForDelete(selectedEmployee);
                       console.log("it has worked", this.value, selectedEmployee);
                   });
               })
@@ -224,6 +260,16 @@ function buildTable(){
 
                 });
             })
+
+            $(document).ready(function() {
+              $('.search').click(function() {
+                  
+                  selectedEmployee = this.value;
+                  console.log("search button has worked", this.value, selectedEmployee);
+                  getEmployee(selectedEmployee);
+
+              });
+          })
                             
             }
         
@@ -242,11 +288,13 @@ function departmentBuildTable(){
     $("#newSpan").empty();
     $("#input-span").empty();
     $("#filter-span").empty();
+    $("#entryCount").empty();
     $('#input-span').append(`<input type="text"placeholder="Search Departments"id="searchMain" onkeyup="searchDepartment()"/>`);
     
     $('#newSpan').append(`<button id="department-add-btn" class="btn btn-secondary add-btn"><i class="fas fa-plus"></i> Add Department`);
 
     document.getElementById("table-title").innerHTML = "Departments";
+    departmentCount = 0;
     $.ajax({
         url: "./php/getAllDepartments.php",
         type: 'POST',
@@ -257,13 +305,14 @@ function departmentBuildTable(){
              console.log("Get Departments is Working", result);
             
             if (result.status.name == "ok") {
-                  
+              document.getElementsByClassName('employee-content')[0].style.width = '80vw';
                 
                 
                 result.data.forEach(dep => {
+                    departmentCount ++;
                     $('#all-body').append(`<tr>
                     
-                    <td>&nbsp&nbsp&nbsp&nbsp${dep.name}</td>
+                    <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp${dep.name}</td>
                    
                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-department-modal" " value="${dep.id}"><i class="fas fa-edit"></i></button>
                 <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-department-modal"  value="${dep.id}  "><i class="far fa-trash-alt"></i></button></td>`);
@@ -271,17 +320,23 @@ function departmentBuildTable(){
                 
                 });
 
+                console.log(departmentCount);
+                $('#entryCount').html(
+                  `Total Departments: ${departmentCount}`
+                );
+
                 $(document).ready(function() {
                   $('.bin').click(function() {
-                      
+                    $(".edit-name").empty();
                       selectedDepartment = this.value;
-                      console.log("it has worked", this.value, selectedDepartment);
+                      getDepartmentForDelete(selectedDepartment)
+                      console.log("selected department is: ", this.value, selectedDepartment);
                   });
               }),
 
               $(document).ready(function() {
                 $('.edit').click(function() {
-                    
+                  
                     selectedDepartment = this.value;
                     console.log("it has worked", this.value, selectedDepartment);
                     getDepartmentEdit(selectedDepartment);
@@ -305,10 +360,12 @@ function locationBuildTable(){
     $("#newSpan").empty();
     $("#input-span").empty();
     $("#filter-span").empty();
+    $("entryCount").empty();
     $('#input-span').append(`<input type="text"placeholder="Search Locations"id="searchMain" onkeyup="searchLocation()"/>`);
     
     $('#newSpan').append(`<button id="location-add-btn" class="btn btn-secondary add-btn"><i class="fas fa-plus"></i> Add Location`);
     document.getElementById("table-title").innerHTML = "Locations";
+    locationCount = 0;
     $.ajax({
         url: "./php/getAllLocations.php",
         type: 'POST',
@@ -319,20 +376,29 @@ function locationBuildTable(){
              console.log("Get Locations is Working", result);
             
             if (result.status.name == "ok") {
-                
+              document.getElementsByClassName('employee-content')[0].style.width = '80vw';
                 result.data.forEach(loc => {
+                  locationCount ++;
+                  
                     $('#all-body').append(`<tr>
                   
-                    <td>&nbsp&nbsp&nbsp&nbsp${loc.name}</td>
+                    <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp${loc.name}</td>
                    
                     <td class="silly-buttons"><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-location-modal" value="${loc.id}"><i class="fas fa-edit"></i></button>
                 <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-location-modal" value="${loc.id}"><i class="far fa-trash-alt"></i></button></td>`);
                 });
 
+                console.log(locationCount);
+                $('#entryCount').html(
+                  `Total Locations: ${locationCount}`
+                );
+
+
                 $(document).ready(function() {
                   $('.bin').click(function() {
                       
                       selectedLocation = this.value;
+                      getLocationForDelete(selectedLocation);
                       console.log("Location bin has worked", this.value, selectedLocation);
                   });
               })
@@ -719,7 +785,7 @@ const onDeleteDepartment = (selectedDepartment) => {
 
     success: (response) => {
       console.log(response);
-   
+      
         departmentBuildTable();
         $('#departments').modal('hide');
         showSuccessModal('Department', 'deleted');
@@ -730,6 +796,7 @@ const onDeleteDepartment = (selectedDepartment) => {
 };
 
 const  checkDependency = (selectedDepartment) => {
+  
   console.log("Check Dependency has been called.", selectedDepartment)
   $.ajax({
     url: './php/getEmployeeDepartment.php',
@@ -757,8 +824,44 @@ const  checkDependency = (selectedDepartment) => {
   });
 };
 
+const getDepartmentForDelete = (selectedDepartment) => {
+  console.log("get department for delte has been called");
+  $.ajax({
+    url: `./php/getDepartmentByID.php`,
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      id: selectedDepartment,
+      
+ 
+    },
+ 
+    
+ 
+    success: (result) => {
+      console.log("this one:", result);
+     result.data.forEach(dep => {
+       $('.edit-name').html(
+         `Delete ${dep.name}`
+       );
+     });
+    },
+    /*failure: () => {
+     $('.edit-name').html(
+       `Edit Employee`
+     );
+    }, */
+ 
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR.responseText,  textStatus, errorThrown);
+      }
+  });
+ 
+ };
+
 
 //Delete Employee
+
 
 const onDeleteEmployee = (selectedEmployee) => {
   console.log("Delete Employee has been called.", selectedEmployee)
@@ -777,6 +880,39 @@ const onDeleteEmployee = (selectedEmployee) => {
     }
     
   });
+};
+
+const getEmployeeForDelete = (selectedEmployee) => {
+  
+ $.ajax({
+   url: `./php/getPersonnelByID.php`,
+   type: 'POST',
+   dataType: 'json',
+   data: {
+     id: selectedEmployee,
+     
+
+   },
+
+   success: (result) => {
+     console.log("this one:", result);
+    result.data.forEach(emp => {
+      $('.edit-name').html(
+        `Delete ${emp.firstName} ${emp.lastName}`
+      );
+    });
+   },
+   failure: () => {
+    $('.edit-name').html(
+      `Edit Employee`
+    );
+   }, 
+
+   error: function(jqXHR, textStatus, errorThrown) {
+     console.log(jqXHR.responseText,  textStatus, errorThrown);
+     }
+ });
+
 };
 
 
@@ -833,6 +969,40 @@ const  checkLocationDependency = (selectedLocation) => {
   });
 };
 
+const getLocationForDelete = (selectedLocation) => {
+  
+  $.ajax({
+    url: `./php/getLocationByID.php`,
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      id: selectedLocation,
+      
+ 
+    },
+ 
+    success: (result) => {
+      console.log("this one:", result);
+     result.data.forEach(loc => {
+       $('.edit-name').html(
+         `Delete ${loc.name}`
+       );
+     });
+    },
+    failure: () => {
+     $('.edit-name').html(
+       `Edit Location`
+     );
+    }, 
+ 
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR.responseText,  textStatus, errorThrown);
+      }
+  });
+ 
+ };
+
+
   //Edit Functions
 
   const  getEdit = (selectedEmployee) => {
@@ -859,27 +1029,7 @@ const  checkLocationDependency = (selectedLocation) => {
 
              console.log("Get Employee for edit is Working", result);
 
-             if (result.status.name == "ok") {
-                
-              result.data.forEach(loc => {
-                  $('#all-body').append(`<tr>
-                
-                  <td>&nbsp&nbsp&nbsp&nbsp${loc.name}</td>
-                 
-                  <td class="silly-buttons"><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-location-modal" value="${loc.id}"><i class="fas fa-edit"></i></button>
-              <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-location-modal" value="${loc.id}"><i class="far fa-trash-alt"></i></button></td>`);
-              });
-
-              $(document).ready(function() {
-                $('.bin').click(function() {
-                    
-                    selectedLocation = this.value;
-                    console.log("Location bin has worked", this.value, selectedLocation);
-                });
-            })
-                          
-          }
-            
+             
             if (result.status.name == "ok") {
                 
               result.data.forEach(emp => {
@@ -890,12 +1040,40 @@ const  checkLocationDependency = (selectedLocation) => {
                 $('#editEmployeeLastName:text').val(emp.lastName);
                 $('#editEmployeeEmail').val(emp.email);
                 $('#editEmployeeJobTitle:text').val(emp.jobTitle);
+                selectedDepartment = emp.departmentID;
 
               }
 
               );
             
             }
+
+            $.ajax({
+              url: `./php/getDepartmentByID.php`,
+              type: 'POST',
+              dataType: 'json',
+              data: {
+                id: selectedDepartment,
+                
+           
+              },
+           
+              
+           
+              success: (result) => {
+                console.log("this one:", result);
+               result.data.forEach(dep => {
+                 $('#editLabel').html(
+                   `Currently: ${dep.name}`
+                 );
+               });
+              },
+              
+           
+              error: function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR.responseText,  textStatus, errorThrown);
+                }
+            });
         
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -1169,6 +1347,101 @@ const onEditLocation = (selectedLocation) => {
  });
 
 };
+
+//Edit Functions
+
+const  getEmployee = (selectedEmployee) => {
+  
+  console.log("The selected employee is: ", selectedEmployee);
+  $("#editEmployeeFirstName").empty();
+  $("#editEmployeeLastName").empty();
+  $("#editEmployeeEmail").empty();
+  $("#editEmployeeJobTitle").empty();
+  $("#editEmployeeDepartment").empty();
+  $(".edit-name").empty();
+  
+  $.ajax({
+      url: "./php/getPersonnelByID.php",
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        id: selectedEmployee,
+      },
+
+      
+      
+      success: function(result) {
+
+           console.log("Get Employee for edit is Working", result);
+
+           
+          if (result.status.name == "ok") {
+              
+            result.data.forEach(emp => {
+              $('#display-employee-name').html(
+                `${emp.firstName} ${emp.lastName}<hr>`
+              );
+              
+
+              $('#display-employee-email').html(
+                `Email: ${emp.email}<hr>`
+              );
+
+              selectedDepartment = emp.departmentID;
+                
+              if (result.data.length > 3) {
+                $('#display-employee-title').html(
+                  `Job Title: ${emp.jobTitle}`
+                );
+              }  
+
+              
+
+            }
+
+            );
+
+
+          
+          
+
+          
+            console.log("get department for employee info has been called");
+            $.ajax({
+              url: `./php/getDepartmentByID.php`,
+              type: 'POST',
+              dataType: 'json',
+              data: {
+                id: selectedDepartment,
+                
+           
+              },
+           
+              
+           
+              success: (result) => {
+                console.log("this one:", result);
+               result.data.forEach(dep => {
+                $('#display-employee-department').html(
+                  `Department: ${dep.name}`
+                );
+               });
+              },
+              
+           
+              error: function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR.responseText,  textStatus, errorThrown);
+                }
+            });
+           
+          }
+      
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR.responseText, textStatus, errorThrown);
+      }
+  }); 
+}
 
 
 
