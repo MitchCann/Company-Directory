@@ -530,7 +530,7 @@ function locationFilter(){
     $("#location-filter-list").empty();
     
     $.ajax({
-        url: "./php/getAlllocations.php",
+        url: "./php/getAllLocations.php",
         type: 'POST',
         dataType: 'json',
         
