@@ -47,22 +47,46 @@
     
     <div id="employees">
       <div class="section-action-container">
+
         <div class="employee-action-container">
+          <span id="input-span">
+            
+        </span>
+
+        
+        
+          <span id="filter-span">
+        </span>
+
+      </div>
+        
+
+
+
+        <!--<div class="employee-action-container">
           <span id="input-span">
             <button id="employee-filter-department-btn" class="btn btn-secondary"> <i class="fas fa-filter"></i> Department</button>
         </span>
-        </div>
 
+        </div>
         <div class="employee-action-container">
           <span id="filter-span">
             <button id="employee-filter-location-btn" class="btn btn-secondary"><i class="fas fa-filter"></i> Location</button>
         </span>
-        </div>
-        <div>
+        </div> -->
+        <div class="employee-action-container">
+          <span id="filter-span">
+            <button id="employee-search-btn" class="btn btn-secondary"><i class="fas fa-search-plus"></i> Search</button>
+            <button id="department-search-btn" class="btn btn-secondary"><i class="fas fa-search-plus"></i> Search</button>
+            <button id="location-search-btn" class="btn btn-secondary"><i class="fas fa-search-plus"></i> Search</button>
+        </span>
+        
+        
           <span id="newSpan">
           <button id="employee-add-btn" class="btn btn-secondary add-btn">
-            <i class="fas fa-plus"></i> Add Employee
+            <i class="fas fa-plus"></i> Add 
           </button>
+          <button id="employee-reset-btn" class="btn btn-secondary"> <i class="fas fa-recycle"></i> Reset Table</button>
         </span>
         </div>
       </div>
@@ -86,94 +110,10 @@
       </div>
     </div>
 
-    <!-- Departments Display Modal -->
-    <div class="modal fade" id="departments">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1>Departments</h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <div class="section-action-container">
-              <div class="deploc-action-container">
-                <input
-                  type="text"
-                  placeholder="Search Departments"
-                  id="department-search"
-                />
-              </div>
-              <div class="deploc-action-container">
-                <button id="department-add-btn" class="btn btn-primary add-btn">
-                  <i class="fas fa-plus"></i>
-                </button>
-                <button
-                  id="department-filter-location-btn"
-                  class="btn btn-primary"
-                >
-                  <i class="fas fa-filter"></i> Location
-                </button>
-              </div>
-            </div>
-            <div id="department-table-body">
-              
-              <table class="table table-header">
-                <tr>
-                  <td>Departments</td>
-                </tr>
-              </table>
-         
-               <div> 
-              <table class='table table-striped table-hover'>
-                <tbody id="department-body">
-                 
-                  
-                  
-                  
-                </tbody>
-              </table> 
-              </div>
-            </div>
-            </div>
-            
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Locations Display Modal -->
-    <div class="modal fade" id="locations">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1>Locations</h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <div class="section-action-container">
-              <input
-                type="text"
-                placeholder="Search Locations"
-                id="location-search"
-              />
-              <button id="location-add-btn" class="btn add-btn">
-                <i class="fas fa-plus"></i>
-              </button>
-            </div>
-            <div id="location-table-body"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+
+
+
+    
     <!-- Employee Display Modal -->
     <div class="modal fade" id="display-modal">
       <div class="modal-dialog">
@@ -203,6 +143,68 @@
         </div>
       </div>
     </div>
+
+    <!-- Search Employee Modal -->
+    <div class="modal fade" id="search-employee-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>Search Employees</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="employee-form">
+              <label for="username">Name:</label><br>
+              <input type="text" id="name" name="name"><br>
+              <label for="cars">Department:</label>
+              <br>
+              <select name="cars" id="cars">
+              <option value="anyDepartment" selected>Any Department</option>
+              
+            </select><br>
+            <label for="cars2">Location:</label>
+              <br>
+              <select name="cars2" id="cars2">
+              <option value="anyLocation" selected>Any Location</option>
+              
+            </select>
+            </form>
+            
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="reset3"
+            >
+              Reset
+            </button>
+            <button
+              id="employee-search-go"
+              type="button"
+              class="btn btn-success"
+              data-bs-dismiss="modal"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <!-- Add Employee Modal -->
     <div class="modal fade" id="add-employee-modal">
       <div class="modal-dialog">

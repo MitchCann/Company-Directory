@@ -177,7 +177,42 @@
     display: none;
     z-index: 100;
 }
+
+#cars {
+  width: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+#cars2 {
+  width: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+#cars3 {
+  width: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+#name {
+  width: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
   
+#nameDep {
+  width: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+#nameLoc {
+  width: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
   
   /* MEDIA QUERIES */
   @media only screen and (max-width: 730px) {
@@ -212,8 +247,8 @@
       text-align: center;
     }
     .employee-action-container {
-      display: flex;
-      justify-content: center;
+     
+      
       padding: 0.25rem 0;
     }
     .employee-action-container input {
@@ -222,6 +257,12 @@
     #employee-table-body {
       max-height: calc(100vh - 272px);
     }
+
+    #employee-reset-btn {
+      margin-top: 0.1rem;
+    }
+
+  
     /* DEPARTMENT AND LOCATION */
     
     #departments .modal-body,

@@ -42,6 +42,56 @@ $(window).on('load', function () {
         locationBuildTable();
       });
 
+  // Search Buttons
+
+    $(document).on("click","#employee-search-btn",function() {
+      document.getElementById('employee-form').reset();
+    populate();
+    populate1();
+    $("#search-employee-modal").modal("show");
+
+    
+  });
+
+    $(document).on("click","#reset3",function() {
+    document.getElementById('employee-form').reset();
+    document.getElementById('department-form').reset();
+    document.getElementById('location-form').reset();
+  
+  });
+
+    $(document).on("click","#employee-search-go",function() {
+    employeeSearch();
+
+  });
+
+    $(document).on("click","#employee-reset-btn",function() {
+  buildTable();
+
+});
+
+    $(document).on("click","#department-search-btn",function() {
+    document.getElementById('department-form').reset();
+    populate1();
+    $("#search-department-modal").modal("show");
+
+
+  });
+
+  $(document).on("click","#department-search-go",function() {
+    departmentSearch();
+
+  });
+
+
+  $(document).on("click","#location-search-btn",function() {
+    document.getElementById('location-form').reset();
+    $("#search-location-modal").modal("show");
+
+
+  });
+
+
 //Filters
     
 
@@ -199,15 +249,19 @@ $("#scrollBack").click(function(event) {
 
 function buildTable(){
 
+    $("#employee-search-btn").show();
+    $("#location-search-btn").hide();
+    $("#department-search-btn").hide();
     $("#all-body").empty();
     $("#newSpan").empty();
     $("#input-span").empty();
     $("#filter-span").empty();
     $("#entryCount").empty();
-    $('#filter-span').append(`<button id="employee-filter-department-btn" class="btn btn-secondary"> <i class="fas fa-filter"></i> Department</button>`);
-    $('#filter-span').append(`<button id="employee-filter-location-btn" class="btn btn-secondary"><i class="fas fa-filter"></i> Location</button>`);
-    $('#input-span').append(`<input type="text"placeholder="Search Employees"id="searchMain" onkeyup="searchTable()"/>`);
-    $('#newSpan').append(`<button id="employee-add-btn" class="btn btn-secondary add-btn"><i class="fas fa-plus"></i> Add Employee</button>`);
+   // $('#filter-span').append(`<button id="employee-filter-department-btn" class="btn btn-secondary"> <i class="fas fa-filter"></i> Department</button>`);
+    //$('#filter-span').append(`<button id="employee-search-btn" class="btn btn-secondary"><i class="fas fa-filter"></i> Location</button>`);
+   //$('#input-span').append(`<input type="text"placeholder="Quick Search Employees"id="searchMain" onkeyup="quickSearchTable()"/>`);
+   $('#filter-span').append();
+    $('#newSpan').append(`<button id="employee-add-btn" class="btn btn-secondary add-btn"><i class="fas fa-plus"></i> Add Employee</button><button id="employee-reset-btn" class="btn btn-secondary"> <i class="fas fa-recycle"></i> Reset Table</button>`);
     document.getElementById("table-title").innerHTML = "Employees";
     employeeCount = 0;
     $.ajax({
@@ -284,12 +338,14 @@ function buildTable(){
 
 function departmentBuildTable(){
 
+    $("#employee-search-btn").hide();
+    
     $("#all-body").empty();
     $("#newSpan").empty();
     $("#input-span").empty();
     $("#filter-span").empty();
     $("#entryCount").empty();
-    $('#input-span').append(`<input type="text"placeholder="Search Departments"id="searchMain" onkeyup="searchDepartment()"/>`);
+    //$('#input-span').append(`<input type="text"placeholder="Search Departments"id="searchMain" onkeyup="searchDepartment()"/>`);
     
     $('#newSpan').append(`<button id="department-add-btn" class="btn btn-secondary add-btn"><i class="fas fa-plus"></i> Add Department`);
 
@@ -312,7 +368,8 @@ function departmentBuildTable(){
                     departmentCount ++;
                     $('#all-body').append(`<tr>
                     
-                    <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp${dep.name}</td>
+                    <td>${dep.name}</td>
+                    <td>${dep.location}</td>
                    
                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-department-modal" " value="${dep.id}"><i class="fas fa-edit"></i></button>
                 <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-department-modal"  value="${dep.id}  "><i class="far fa-trash-alt"></i></button></td>`);
@@ -356,12 +413,14 @@ function departmentBuildTable(){
 
 function locationBuildTable(){
 
+    $("#employee-search-btn").hide();
+    
     $("#all-body").empty();
     $("#newSpan").empty();
     $("#input-span").empty();
     $("#filter-span").empty();
     $("entryCount").empty();
-    $('#input-span').append(`<input type="text"placeholder="Search Locations"id="searchMain" onkeyup="searchLocation()"/>`);
+    //$('#input-span').append(`<input type="text"placeholder="Search Locations"id="searchMain" onkeyup="searchLocation()"/>`);
     
     $('#newSpan').append(`<button id="location-add-btn" class="btn btn-secondary add-btn"><i class="fas fa-plus"></i> Add Location`);
     document.getElementById("table-title").innerHTML = "Locations";
@@ -382,7 +441,7 @@ function locationBuildTable(){
                   
                     $('#all-body').append(`<tr>
                   
-                    <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp${loc.name}</td>
+                    <td>${loc.name}</td>
                    
                     <td class="silly-buttons"><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-location-modal" value="${loc.id}"><i class="fas fa-edit"></i></button>
                 <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-location-modal" value="${loc.id}"><i class="far fa-trash-alt"></i></button></td>`);
@@ -424,71 +483,500 @@ function locationBuildTable(){
     
 //Search
 
-function searchTable() {
-    // Declare variables
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("searchMain");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("holiday-table");
-    tr = table.getElementsByTagName("tr");
-  
-    // Loop through all table rows, and hide those who don't match the search query
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[0];
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }
-    }
-  }
 
-  function searchDepartment() {
-    // Declare variables
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("searchMain");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("holiday-table");
-    tr = table.getElementsByTagName("tr");
-  
-    // Loop through all table rows, and hide those who don't match the search query
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[1];
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }
-    }
-  }
+  function employeeSearch() {
 
-  function searchLocation() {
-    // Declare variables
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("searchMain");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("holiday-table");
-    tr = table.getElementsByTagName("tr");
+     
+      departmentSelect = $('#cars option:selected').val();
+      // console.log(departmentSelect);
+      // console.log($('#locationFilterSelect').val());
+      locationSelect = $('#cars2 option:selected').val();
+      // console.log(locationSelect);
+
+      let value = $('#name').val();
+      console.log("The Value is: ", value);
+      console.log(value, departmentSelect, locationSelect);
+      
+      if ((value) && (departmentSelect === 'anyDepartment') && (locationSelect === 'anyLocation')) {
+        $.ajax({
+          url:"./php/searchEmployee.php",
+          type: "POST",
+          dataType: "JSON",
+          data:{
+            value: value
+          },
+
+          success: function(result) {
+            $("#all-body").empty();
+            employeeCount = 0;
+            console.log("Employee Search is Working", result);
+           
+           if (result.status.name == "ok") {
+             document.getElementsByClassName('employee-content')[0].style.width = '100%';
+               result.data.forEach(person => {
+                   employeeCount ++;
+                   
+                   $('#all-body').append(`<tr><td>${person.firstName + " " + person.lastName}</td>
+                   <td class="hidden">${person.department}</td>
+                   <td class="hidden">${person.location}</td>
+                   <td class="hidden">${person.email}</td>
+                   <td><button type="button" class="search" data-bs-toggle="modal" data-bs-target="#display-modal" value="${person.id}"><i class="fas fa-search-plus"></i></button>
+
+                   <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-employee-modal" value="${person.id}"><i class="fas fa-edit"></i></button>
+                   <td><button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-employee-modal" value="${person.id}"><i class="far fa-trash-alt"></i></button></td>`);
+               });
+
+                 console.log(employeeCount);
+                 $('#entryCount').html(
+                   `Total Results: ${employeeCount}`
+                 );
+               
+                 $('#preloader1').hide();
+               
+
+               $(document).ready(function() {
+                 $('.bin').click(function() {
+                     
+                     selectedEmployee = this.value;
+                     getEmployeeForDelete(selectedEmployee);
+                     console.log("it has worked", this.value, selectedEmployee);
+                 });
+             })
+
+             $(document).ready(function() {
+               $('.edit').click(function() {
+                   
+                   selectedEmployee = this.value;
+                   console.log("edit button has worked", this.value, selectedEmployee);
+                   getEdit(selectedEmployee);
+
+               });
+           })
+
+           $(document).ready(function() {
+             $('.search').click(function() {
+                 
+                 selectedEmployee = this.value;
+                 console.log("search button has worked", this.value, selectedEmployee);
+                 getEmployee(selectedEmployee);
+
+             });
+         })
+                           
+           }
+       
+       },
+            
+            error:function(jqXHR){
+              console.log(jqXHR);
+            }
+          
+        });
+      } 
+      else if ((value) && (departmentSelect !== 'anyDepartment') && (locationSelect === 'anyLocation')) {
+        console.log("There was a department selected");
+        $.ajax({
+          url:"./php/searchDepartment.php",
+          type: "POST",
+          dataType: "JSON",
+          data:{
+            value: value,
+            id: departmentSelect
+          },
+            success: function(result){
+              console.log(result);
+
+              $("#all-body").empty();
+              employeeCount = 0;
+              console.log("Employee Search is Working", result);
+             
+             if (result.status.name == "ok") {
+               document.getElementsByClassName('employee-content')[0].style.width = '100%';
+                 result.data.forEach(person => {
+                     employeeCount ++;
+                     
+                     $('#all-body').append(`<tr><td>${person.firstName + " " + person.lastName}</td>
+                     <td class="hidden">${person.department}</td>
+                     <td class="hidden">${person.location}</td>
+                     <td class="hidden">${person.email}</td>
+                     <td><button type="button" class="search" data-bs-toggle="modal" data-bs-target="#display-modal" value="${person.id}"><i class="fas fa-search-plus"></i></button>
   
-    // Loop through all table rows, and hide those who don't match the search query
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[1];
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
+                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-employee-modal" value="${person.id}"><i class="fas fa-edit"></i></button>
+                     <td><button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-employee-modal" value="${person.id}"><i class="far fa-trash-alt"></i></button></td>`);
+                 });
+  
+                   console.log(employeeCount);
+                   $('#entryCount').html(
+                     `Total Results: ${employeeCount}`
+                   );
+                 
+                   $('#preloader1').hide();
+                 
+  
+                 $(document).ready(function() {
+                   $('.bin').click(function() {
+                       
+                       selectedEmployee = this.value;
+                       getEmployeeForDelete(selectedEmployee);
+                       console.log("it has worked", this.value, selectedEmployee);
+                   });
+               })
+  
+               $(document).ready(function() {
+                 $('.edit').click(function() {
+                     
+                     selectedEmployee = this.value;
+                     console.log("edit button has worked", this.value, selectedEmployee);
+                     getEdit(selectedEmployee);
+  
+                 });
+             })
+  
+             $(document).ready(function() {
+               $('.search').click(function() {
+                   
+                   selectedEmployee = this.value;
+                   console.log("search button has worked", this.value, selectedEmployee);
+                   getEmployee(selectedEmployee);
+  
+               });
+           })
+                             
+             }
+            },
+            error:function(jqXHR){
+              console.log(jqXHR);
+            }
+          
+        });
+      } else if ((value) && (departmentSelect === 'anyDepartment') && (locationSelect !== 'anyLocation')) {
+        console.log("There was a location selected");
+        $.ajax({
+          url:"./php/searchLocation.php",
+          type: "POST",
+          dataType: "JSON",
+          data:{
+            value: value,
+            id: locationSelect
+          },
+            success: function(result){
+              console.log(result);
+
+              $("#all-body").empty();
+              employeeCount = 0;
+              console.log("Employee Search is Working", result);
+             
+             if (result.status.name == "ok") {
+               document.getElementsByClassName('employee-content')[0].style.width = '100%';
+                 result.data.forEach(person => {
+                     employeeCount ++;
+                     
+                     $('#all-body').append(`<tr><td>${person.firstName + " " + person.lastName}</td>
+                     <td class="hidden">${person.department}</td>
+                     <td class="hidden">${person.location}</td>
+                     <td class="hidden">${person.email}</td>
+                     <td><button type="button" class="search" data-bs-toggle="modal" data-bs-target="#display-modal" value="${person.id}"><i class="fas fa-search-plus"></i></button>
+  
+                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-employee-modal" value="${person.id}"><i class="fas fa-edit"></i></button>
+                     <td><button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-employee-modal" value="${person.id}"><i class="far fa-trash-alt"></i></button></td>`);
+                 });
+  
+                   console.log(employeeCount);
+                   $('#entryCount').html(
+                     `Total Results: ${employeeCount}`
+                   );
+                 
+                   $('#preloader1').hide();
+                 
+  
+                 $(document).ready(function() {
+                   $('.bin').click(function() {
+                       
+                       selectedEmployee = this.value;
+                       getEmployeeForDelete(selectedEmployee);
+                       console.log("it has worked", this.value, selectedEmployee);
+                   });
+               })
+  
+               $(document).ready(function() {
+                 $('.edit').click(function() {
+                     
+                     selectedEmployee = this.value;
+                     console.log("edit button has worked", this.value, selectedEmployee);
+                     getEdit(selectedEmployee);
+  
+                 });
+             })
+  
+             $(document).ready(function() {
+               $('.search').click(function() {
+                   
+                   selectedEmployee = this.value;
+                   console.log("search button has worked", this.value, selectedEmployee);
+                   getEmployee(selectedEmployee);
+  
+               });
+           })
+                             
+             }
+            
+            },
+            error:function(jqXHR){
+              console.log(jqXHR);
+            }
+          
+        });
       }
-    }
-  }
+       else if ((value) && (departmentSelect !== 'anyDepartment') && (locationSelect !== 'anyLocation')) {
+        $.ajax({
+          url:"./php/searchBoth.php",
+          type: "POST",
+          dataType: "JSON",
+          data:{
+            value: value,
+            locationId: locationSelect,
+            departmentId: departmentSelect
+          },
+            success: function(result){
+              
+              console.log(result);
+
+              $("#all-body").empty();
+              employeeCount = 0;
+              console.log("Employee Search is Working", result);
+             
+             if (result.status.name == "ok") {
+               document.getElementsByClassName('employee-content')[0].style.width = '100%';
+                 result.data.forEach(person => {
+                     employeeCount ++;
+                     
+                     $('#all-body').append(`<tr><td>${person.firstName + " " + person.lastName}</td>
+                     <td class="hidden">${person.department}</td>
+                     <td class="hidden">${person.location}</td>
+                     <td class="hidden">${person.email}</td>
+                     <td><button type="button" class="search" data-bs-toggle="modal" data-bs-target="#display-modal" value="${person.id}"><i class="fas fa-search-plus"></i></button>
+  
+                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-employee-modal" value="${person.id}"><i class="fas fa-edit"></i></button>
+                     <td><button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-employee-modal" value="${person.id}"><i class="far fa-trash-alt"></i></button></td>`);
+                 });
+  
+                   console.log(employeeCount);
+                   $('#entryCount').html(
+                     `Total Results: ${employeeCount}`
+                   );
+                 
+                   $('#preloader1').hide();
+                 
+  
+                 $(document).ready(function() {
+                   $('.bin').click(function() {
+                       
+                       selectedEmployee = this.value;
+                       getEmployeeForDelete(selectedEmployee);
+                       console.log("it has worked", this.value, selectedEmployee);
+                   });
+               })
+  
+               $(document).ready(function() {
+                 $('.edit').click(function() {
+                     
+                     selectedEmployee = this.value;
+                     console.log("edit button has worked", this.value, selectedEmployee);
+                     getEdit(selectedEmployee);
+  
+                 });
+             })
+  
+             $(document).ready(function() {
+               $('.search').click(function() {
+                   
+                   selectedEmployee = this.value;
+                   console.log("search button has worked", this.value, selectedEmployee);
+                   getEmployee(selectedEmployee);
+  
+               });
+           })
+                             
+             }
+            
+            
+            },
+            error:function(jqXHR){
+              console.log(jqXHR);
+            }     
+        });
+      } else if ((!value) && (departmentSelect !== 'anyDepartment') && (locationSelect === 'anyLocation')) {
+        $.ajax({
+          url:"./php/searchDepartmentOnly.php",
+          type: "POST",
+          dataType: "JSON",
+          data:{
+            value: value,
+            locationId: locationSelect,
+            departmentId: departmentSelect
+          },
+            success: function(result){
+              
+              console.log(result);
+
+              $("#all-body").empty();
+              employeeCount = 0;
+              console.log("Employee Search is Working", result);
+             
+             if (result.status.name == "ok") {
+               document.getElementsByClassName('employee-content')[0].style.width = '100%';
+                 result.data.forEach(person => {
+                     employeeCount ++;
+                     
+                     $('#all-body').append(`<tr><td>${person.firstName + " " + person.lastName}</td>
+                     <td class="hidden">${person.department}</td>
+                     <td class="hidden">${person.location}</td>
+                     <td class="hidden">${person.email}</td>
+                     <td><button type="button" class="search" data-bs-toggle="modal" data-bs-target="#display-modal" value="${person.id}"><i class="fas fa-search-plus"></i></button>
+  
+                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-employee-modal" value="${person.id}"><i class="fas fa-edit"></i></button>
+                     <td><button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-employee-modal" value="${person.id}"><i class="far fa-trash-alt"></i></button></td>`);
+                 });
+  
+                   console.log(employeeCount);
+                   $('#entryCount').html(
+                     `Total Results: ${employeeCount}`
+                   );
+                 
+                   $('#preloader1').hide();
+                 
+  
+                 $(document).ready(function() {
+                   $('.bin').click(function() {
+                       
+                       selectedEmployee = this.value;
+                       getEmployeeForDelete(selectedEmployee);
+                       console.log("it has worked", this.value, selectedEmployee);
+                   });
+               })
+  
+               $(document).ready(function() {
+                 $('.edit').click(function() {
+                     
+                     selectedEmployee = this.value;
+                     console.log("edit button has worked", this.value, selectedEmployee);
+                     getEdit(selectedEmployee);
+  
+                 });
+             })
+  
+             $(document).ready(function() {
+               $('.search').click(function() {
+                   
+                   selectedEmployee = this.value;
+                   console.log("search button has worked", this.value, selectedEmployee);
+                   getEmployee(selectedEmployee);
+  
+               });
+           })
+                             
+             }
+            
+            
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.log(jqXHR.responseText);
+            }   
+        });
+      } else if ((!value) && (departmentSelect === 'anyDepartment') && (locationSelect !== 'anyLocation')) {
+        $.ajax({
+          url:"./php/searchLocationOnly.php",
+          type: "POST",
+          dataType: "JSON",
+          data:{
+            value: value,
+            locationId: locationSelect,
+            departmentId: departmentSelect
+          },
+            success: function(result){
+              
+              console.log(result);
+
+              $("#all-body").empty();
+              employeeCount = 0;
+              console.log("Employee Search is Working", result);
+             
+             if (result.status.name == "ok") {
+               document.getElementsByClassName('employee-content')[0].style.width = '100%';
+                 result.data.forEach(person => {
+                     employeeCount ++;
+                     
+                     $('#all-body').append(`<tr><td>${person.firstName + " " + person.lastName}</td>
+                     <td class="hidden">${person.department}</td>
+                     <td class="hidden">${person.location}</td>
+                     <td class="hidden">${person.email}</td>
+                     <td><button type="button" class="search" data-bs-toggle="modal" data-bs-target="#display-modal" value="${person.id}"><i class="fas fa-search-plus"></i></button>
+  
+                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-employee-modal" value="${person.id}"><i class="fas fa-edit"></i></button>
+                     <td><button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-employee-modal" value="${person.id}"><i class="far fa-trash-alt"></i></button></td>`);
+                 });
+  
+                   console.log(employeeCount);
+                   $('#entryCount').html(
+                     `Total Results: ${employeeCount}`
+                   );
+                 
+                   $('#preloader1').hide();
+                 
+  
+                 $(document).ready(function() {
+                   $('.bin').click(function() {
+                       
+                       selectedEmployee = this.value;
+                       getEmployeeForDelete(selectedEmployee);
+                       console.log("it has worked", this.value, selectedEmployee);
+                   });
+               })
+  
+               $(document).ready(function() {
+                 $('.edit').click(function() {
+                     
+                     selectedEmployee = this.value;
+                     console.log("edit button has worked", this.value, selectedEmployee);
+                     getEdit(selectedEmployee);
+  
+                 });
+             })
+  
+             $(document).ready(function() {
+               $('.search').click(function() {
+                   
+                   selectedEmployee = this.value;
+                   console.log("search button has worked", this.value, selectedEmployee);
+                   getEmployee(selectedEmployee);
+  
+               });
+           })
+                             
+             }
+            
+            
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.log(jqXHR.responseText);
+            }   
+        });
+      } 
+      
+      
+      
+      else {
+        buildTable();
+      }
+
+    
+  };
+
+
+
+
+
+
 
   //Filters 
 
@@ -631,6 +1119,10 @@ function populate(){
                     $('#editEmployeeDepartment').append(`<option value="${dep.id}">${dep.name}</option>
                     `)
 
+                    $('#cars').append(`<option value="${dep.id}">${dep.name}</option>
+                    `)
+
+
                  
 
 
@@ -669,6 +1161,11 @@ function populate1(){
                   $('#addDepartmentLocation').append(`<option value="${loc.id}">${loc.name}</option>
                   `)
                   $('#editDepartmentLocation').append(`<option value="${loc.id}">${loc.name}</option>
+                  `)
+                  $('#cars2').append(`<option value="${loc.id}">${loc.name}</option>
+                  `)
+
+                  $('#cars3').append(`<option value="${loc.id}">${loc.name}</option>
                   `)
                     
 
@@ -795,11 +1292,14 @@ const onDeleteDepartment = (selectedDepartment) => {
   });
 };
 
+
+
+
 const  checkDependency = (selectedDepartment) => {
   
   console.log("Check Dependency has been called.", selectedDepartment)
   $.ajax({
-    url: './php/getEmployeeDepartment.php',
+    url: './php/checkDependency.php',
     type: 'POST',
     dataType: 'json',
     data: {
@@ -808,7 +1308,7 @@ const  checkDependency = (selectedDepartment) => {
 
     success: (response) => {
       console.log(response);
-      if (response.data.length !== 0) {
+      if (response.data[0]['count'] !== 0) {
        console.log("There's something here")
        $('#dependency-modal').modal('show');
       } else {
@@ -941,6 +1441,9 @@ const onDeleteLocation = (selectedLocation) => {
   });
 };
 
+
+
+
 const  checkLocationDependency = (selectedLocation) => {
   console.log("Check Location Dependency has been called.", selectedLocation)
   $.ajax({
@@ -968,7 +1471,6 @@ const  checkLocationDependency = (selectedLocation) => {
     
   });
 };
-
 const getLocationForDelete = (selectedLocation) => {
   
   $.ajax({
@@ -1064,7 +1566,7 @@ const getLocationForDelete = (selectedLocation) => {
                 console.log("this one:", result);
                result.data.forEach(dep => {
                  $('#editLabel').html(
-                   `Currently: ${dep.name}`
+                   `Department (Currently: ${dep.name})`
                  );
                });
               },

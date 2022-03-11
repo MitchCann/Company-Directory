@@ -28,7 +28,7 @@
 		exit;
 
 	}	
-
+	
 	$query = 'SELECT id, name FROM location ORDER BY name';
 
 	$result = $conn->query($query);
