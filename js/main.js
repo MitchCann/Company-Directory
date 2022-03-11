@@ -1191,6 +1191,8 @@ function addDepartment(){
   const locationID = $('#addDepartmentLocation')[0].value;
   console.log(name, locationID);
     
+    if (name) {
+      $("#add-department-modal").modal("hide");
     $.ajax({
         url: "./php/insertDepartment.php",
         type: 'POST',
@@ -1201,10 +1203,12 @@ function addDepartment(){
         },
         success: function(result) {
 
-             console.log("Add Department is Working", result);
+          
             
             if (result.status.name == "ok") {
-                
+              document.getElementById('depForm').reset();
+              document.getElementById('requiredDep').style.color = "black";
+              console.log("Add Department is Working", result);
               departmentBuildTable();
                             
             }
@@ -1214,9 +1218,22 @@ function addDepartment(){
           console.log(jqXHR.responseText);
         }
     }); 
+}       else {
+          document.getElementById('requiredDep').style.color = "red";
+}
+
 }
 
 function addEmployee() {
+
+    firstName = $("#addEmployeeFirstName").val(),
+    lastName = $("#addEmployeeLastName").val(),
+    email = $("#addEmployeeEmail").val()
+    console.log(firstName, lastName, email);
+
+    if (firstName && lastName && email) {
+      $("#add-employee-modal").modal("hide");
+
   $.ajax({
       url: './php/insertEmployee.php',
       type: 'POST',
@@ -1233,16 +1250,35 @@ function addEmployee() {
           console.log(result);
           if (result.status.name == "ok") {
               buildTable();
-              
+              document.getElementById('employeeAddForm').reset();
+              document.getElementsByClassName('required')[0].style.color = "black";
+              document.getElementsByClassName('required')[2].style.color = "black";
+              document.getElementsByClassName('required')[4].style.color = "black";
           }
       },
       error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR.responseText,  textStatus, errorThrown);
       }
   }); 
-}
+ }
+ 
+ 
+ else {
+   console.log("Something was missing");
+   document.getElementsByClassName('required')[0].style.color = "red";
+   document.getElementsByClassName('required')[2].style.color = "red";
+   document.getElementsByClassName('required')[4].style.color = "red";
+ }
+
+};
 
 function addLocation() {
+
+  locName = $("#addLocationName").val();
+
+  if (locName) {
+    $("#add-location-modal").modal("hide");
+  
   $.ajax({
       url: './php/insertLocation.php',
       type: 'POST',
@@ -1256,7 +1292,9 @@ function addLocation() {
           
           console.log(result);
           if (result.status.name == "ok") {
+            document.getElementById('locForm').reset();
               locationBuildTable();
+              document.getElementById('requiredLoc').style.color = "black";
               
           }
       },
@@ -1264,6 +1302,10 @@ function addLocation() {
       console.log(jqXHR.responseText,  textStatus, errorThrown);
       }
   }); 
+}   else {
+      document.getElementById('requiredLoc').style.color = "red";
+}
+
 }
 
 // Delete Functions

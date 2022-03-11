@@ -60,20 +60,6 @@
 
       </div>
         
-
-
-
-        <!--<div class="employee-action-container">
-          <span id="input-span">
-            <button id="employee-filter-department-btn" class="btn btn-secondary"> <i class="fas fa-filter"></i> Department</button>
-        </span>
-
-        </div>
-        <div class="employee-action-container">
-          <span id="filter-span">
-            <button id="employee-filter-location-btn" class="btn btn-secondary"><i class="fas fa-filter"></i> Location</button>
-        </span>
-        </div> -->
         <div class="employee-action-container">
           <span id="filter-span">
             <button id="employee-search-btn" class="btn btn-secondary"><i class="fas fa-search-plus"></i> Search</button>
@@ -219,30 +205,30 @@
             ></button>
           </div>
           <div class="modal-body">
-            <form>
+            <form id="employeeAddForm">
               <div class="form-group">
-                <label for="addEmployeeFirstName">First Name</label>
+                <label for="addEmployeeFirstName" class="required">First Name*</label>
                 <input
                   type="text"
-                  class="form-control add-first-name"
+                  class="form-control add-first-name required"
                   id="addEmployeeFirstName"
                   required
                 />
               </div>
               <div class="form-group">
-                <label for="addEmployeeLastName">Last Name</label>
+                <label for="addEmployeeLastName" class="required">Last Name*</label>
                 <input
                   type="text"
-                  class="form-control add-last-name"
+                  class="form-control add-last-name required"
                   id="addEmployeeLastName"
                   required
                 />
               </div>
               <div class="form-group">
-                <label for="addEmployeeEmail">Email</label>
+                <label for="addEmployeeEmail" class="required">Email*</label>
                 <input
                   type="email"
-                  class="form-control add-email"
+                  class="form-control add-email required"
                   id="addEmployeeEmail"
                   required
                 />
@@ -263,17 +249,16 @@
                 </select>
               </div>
             </form>
-            <p class="add-error"></p>
-            <p class="add-email-error"></p>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" data-bs-dismiss="modal">
               Back
             </button>
-            <button id="confirm-employee-add-btn" class="btn btn-success" data-bs-dismiss="modal" >
+            <button id="confirm-employee-add-btn" class="btn btn-success" >
               Create
             </button>
           </div>
+        
         </div>
       </div>
     </div>
@@ -291,9 +276,9 @@
             ></button>
           </div>
           <div class="modal-body">
-            <form>
+            <form id="depForm">
               <div class="form-group">
-                <label for="addDepartmentName">Name</label>
+                <label for="addDepartmentName" id="requiredDep">Name*</label>
                 <input
                   type="text"
                   class="form-control add-department-name"
@@ -317,7 +302,7 @@
             >
               Back
             </button>
-            <button id="confirm-department-add-btn" class="btn btn-success" data-bs-dismiss="modal">
+            <button id="confirm-department-add-btn" class="btn btn-success" >
               Create
             </button>
           </div>
@@ -338,9 +323,9 @@
             ></button>
           </div>
           <div class="modal-body">
-            <form>
+            <form id="locForm">
               <div class="form-group">
-                <label for="addLocationName">Name</label>
+                <label for="addLocationName" id="requiredLoc">Name*</label>
                 <input
                   type="text"
                   class="form-control add-location-name"
@@ -359,7 +344,7 @@
             >
               Back
             </button>
-            <button id="confirm-location-add-btn" class="btn btn-success" data-bs-dismiss="modal">
+            <button id="confirm-location-add-btn" class="btn btn-success">
               Create
             </button>
           </div>
