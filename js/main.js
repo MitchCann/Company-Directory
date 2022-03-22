@@ -185,14 +185,15 @@ $(window).on('load', function () {
 
    $(document).on("click", "#confirm-delete-department-btn", function(){
     console.log("The Department is: ", selectedDepartment);
-    checkDependency(selectedDepartment);
+    onDeleteDepartment(selectedDepartment);
   });
 
   //Delete Location 
 
   $(document).on("click", "#confirm-delete-location-btn", function(){
     console.log("The Department is: ", selectedLocation);
-    checkLocationDependency(selectedLocation);
+    onDeleteLocation(selectedLocation)
+    
   });
 
   //Delete Employee 
@@ -278,7 +279,7 @@ function buildTable(){
                 result.data.forEach(person => {
                     employeeCount ++;
                     
-                    $('#all-body').append(`<tr><td>${person.firstName + " " + person.lastName}</td>
+                    $('#all-body').append(`<tr><td>${person.lastName + ", " + person.firstName}</td>
                     <td class="hidden">${person.department}</td>
                     <td class="hidden">${person.location}</td>
                     <td class="hidden">${person.email}</td>
@@ -372,7 +373,7 @@ function departmentBuildTable(){
                     <td>${dep.location}</td>
                    
                     <td><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-department-modal" " value="${dep.id}"><i class="fas fa-edit"></i></button>
-                <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-department-modal"  value="${dep.id}  "><i class="far fa-trash-alt"></i></button></td>`);
+                <button type="button" class="bin" value="${dep.id}  "><i class="far fa-trash-alt"></i></button></td>`);
 
                 
                 });
@@ -388,6 +389,7 @@ function departmentBuildTable(){
                       selectedDepartment = this.value;
                       getDepartmentForDelete(selectedDepartment)
                       console.log("selected department is: ", this.value, selectedDepartment);
+                      checkDependency(selectedDepartment);
                   });
               }),
 
@@ -397,6 +399,7 @@ function departmentBuildTable(){
                     selectedDepartment = this.value;
                     console.log("it has worked", this.value, selectedDepartment);
                     getDepartmentEdit(selectedDepartment);
+                    
                 });
             })
                 
@@ -444,7 +447,7 @@ function locationBuildTable(){
                     <td>${loc.name}</td>
                    
                     <td class="silly-buttons"><button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#edit-location-modal" value="${loc.id}"><i class="fas fa-edit"></i></button>
-                <button type="button" class="bin" data-bs-toggle="modal" data-bs-target="#delete-location-modal" value="${loc.id}"><i class="far fa-trash-alt"></i></button></td>`);
+                <button type="button" class="bin"  value="${loc.id}"><i class="far fa-trash-alt"></i></button></td>`);
                 });
 
                 console.log(locationCount);
@@ -459,6 +462,7 @@ function locationBuildTable(){
                       selectedLocation = this.value;
                       getLocationForDelete(selectedLocation);
                       console.log("Location bin has worked", this.value, selectedLocation);
+                      checkLocationDependency(selectedLocation);
                   });
               })
 
@@ -1355,7 +1359,8 @@ const  checkDependency = (selectedDepartment) => {
        $('#dependency-modal').modal('show');
       } else {
         console.log("There's nothing here")
-        onDeleteDepartment(selectedDepartment);
+          $('#delete-department-modal').modal('show');
+      
       }
     },
 
@@ -1367,7 +1372,7 @@ const  checkDependency = (selectedDepartment) => {
 };
 
 const getDepartmentForDelete = (selectedDepartment) => {
-  console.log("get department for delte has been called");
+  console.log("get department for delete has been called");
   $.ajax({
     url: `./php/getDepartmentByID.php`,
     type: 'POST',
@@ -1500,10 +1505,10 @@ const  checkLocationDependency = (selectedLocation) => {
       console.log("Location Dependency Array: ", response);
       if (response.data.length !== 0) {
        console.log("There's something here")
-       $('#dependency-modal').modal('show');
+       $('#dependency-modal-location').modal('show');
       } else {
-        console.log("The Location Dependency Array is Empty")
-       onDeleteLocation(selectedLocation);
+        console.log("The Location Dependency Array is Empty");
+       $('#delete-location-modal').modal('show');
       }
     },
 
@@ -1607,9 +1612,19 @@ const getLocationForDelete = (selectedLocation) => {
               success: (result) => {
                 console.log("this one:", result);
                result.data.forEach(dep => {
+                 depVal = result.data[0].id;
+                 console.log(depVal);
                  $('#editLabel').html(
-                   `Department (Currently: ${dep.name})`
+                   `Department`
                  );
+
+                 selectElement('editEmployeeDepartment', depVal);
+
+                    function selectElement(id, valueToSelect) {    
+                        let element = document.getElementById(id);
+                        element.value = valueToSelect;
+                        console.log(valueToSelect);
+                    }
                });
               },
               
@@ -1733,9 +1748,18 @@ const  getDepartmentEdit = (selectedDepartment) => {
                   result.data.forEach(loc => {
                    
                     locName = loc.name;
-                    locId = loc.locationID;
-                    console.log("Loc Name is:", locName);
-                    document.getElementById("demo").innerHTML = "Location (currently " + loc.name + ")";
+                    locId = result.data[0].id;
+                    console.log("Loc Name is:", locName, "LocId is: ", locId);
+
+                    document.getElementById("demo").innerHTML = "Location";
+                    //document.getElementById('editDepartmentLocation').getElementsByTagName('option')[locId].selected = 'selected'
+                    selectElement('editDepartmentLocation', locId);
+
+                    function selectElement(id, valueToSelect) {    
+                        let element = document.getElementById(id);
+                        element.value = valueToSelect;
+                        console.log(valueToSelect);
+                    }
                   }
       
                   );
