@@ -262,7 +262,7 @@ function buildTable(){
     //$('#filter-span').append(`<button id="employee-search-btn" class="btn btn-secondary"><i class="fas fa-filter"></i> Location</button>`);
    //$('#input-span').append(`<input type="text"placeholder="Quick Search Employees"id="searchMain" onkeyup="quickSearchTable()"/>`);
    $('#filter-span').append();
-    $('#newSpan').append(`<button id="employee-add-btn" class="btn btn-secondary add-btn"><i class="fas fa-plus"></i> Add Employee</button><button id="employee-reset-btn" class="btn btn-secondary"> <i class="fas fa-recycle"></i> Reset Table</button>`);
+    $('#newSpan').append(`<button id="employee-add-btn" class="btn btn-secondary add-btn"><i class="fas fa-plus"></i> Add Employee</button><button id="employee-reset-btn" class="btn btn-secondary"> <i class="fas fa-recycle"></i> Refresh Table</button>`);
     document.getElementById("table-title").innerHTML = "Employees";
     employeeCount = 0;
     $.ajax({
